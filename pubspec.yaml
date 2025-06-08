@@ -1,0 +1,51 @@
+name: exoskeleton_suit_app
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.6.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_bluetooth_serial:
+    path: flutter_bluetooth_serial
+  provider: ^6.1.5
+  syncfusion_flutter_sliders: ^29.1.38
+  tflite_flutter: ^0.11.0
+  tflite_flutter_helper_plus: ^0.0.2
+  #path_provider: ^2.1.1
+  
+  
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+ 
+  
+
+
+flutter:
+  uses-material-design: true
+
+  fonts:
+    - family: Golos_Text
+      fonts:
+        - asset: assets/fonts/GolosText-ExtraBold.ttf
+          weight: 800
+    - family: Pacifico
+      fonts:
+        - asset: assets/fonts/Pacifico-Regular.ttf
+          weight: 400
+    - family: Federant
+      fonts:
+        - asset: assets/fonts/Federant-Regular.ttf
+          weight: 700
+
+  assets:
+    - assets/images/
+    - assets/models/
+
+    
+    
