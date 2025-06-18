@@ -28,7 +28,7 @@ class _AdvancedState extends State<Advanced> {
                 width: 120,
                 height: 120,
                 decoration: BoxDecoration(
-                  color: Colors.blue[300],
+                  color:  Color(0xff98C5EE),
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
@@ -41,11 +41,11 @@ class _AdvancedState extends State<Advanced> {
               ),
             ),
 
-            // Top-left circle
+            // Top-left arrow
             Positioned(
               top: 10, // Moves it up off the top edge
               left: 5, // Moves it left off the screen
-
+              
               child: IconButton(
                 icon: const Icon(
                   Icons.arrow_back,
@@ -72,7 +72,7 @@ class _AdvancedState extends State<Advanced> {
                 width: 120,
                 height: 120,
                 decoration: BoxDecoration(
-                  color: Colors.blue[300],
+                  color:  Color(0xff98C5EE),
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
@@ -135,7 +135,7 @@ class _AdvancedState extends State<Advanced> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 32, vertical: 80),
                 decoration: BoxDecoration(
-                  color: Colors.blue[300],
+                  color:  Color(0xff98C5EE),
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(260),
                     topRight: Radius.circular(260),

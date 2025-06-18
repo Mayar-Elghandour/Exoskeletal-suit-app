@@ -1,0 +1,41 @@
+import numpy as np
+import scipy . stats as stats
+
+ # Data for independent two - sample t- test
+design_A = np . array ([45 , 47 , 46 , 44 , 45])
+design_B = np . array ([48 , 50 , 49 , 51 , 50])
+alpha = 0.05 # Significance level
+
+ # Compute sample means
+x_bar_A = np . mean ( design_A )
+x_bar_B = np . mean ( design_B )
+
+ # Compute sample standard deviations
+s_A = np . std ( design_A , ddof =1)
+s_B = np . std ( design_B , ddof =1)
+
+# Compute pooled variance
+n_A = len ( design_A )
+n_B = len ( design_B )
+s_p2 = ((( n_A - 1) * s_A **2) + (( n_B - 1) * s_B **2) ) / ( n_A + n_B - 2)
+
+# Compute t- statistic
+t_stat = ( x_bar_A - x_bar_B ) / np . sqrt ( s_p2 * (1/ n_A + 1/ n_B ) )
+
+df = n_A + n_B - 2
+
+# Compute p- value (two - tailed test )
+p_value = 2 * (1 - stats . t . cdf (abs ( t_stat ) , df ) )
+
+print (" Independent  Two - Sample t- Test ( Energy Efficiency )")
+print ( f" Sample   Means : x_bar_A  = { x_bar_A :.2f} ,  x_bar_B  = { x_bar_B :.2f}")
+print ( f" Sample   Standard   Deviations : s_A = {s_A :.2f} , s_B = {s_B :.2f}")
+print ( f" Pooled   Variance  ( s_p2 ): { s_p2 :.2f}")
+print ( f"t- statistic : { t_stat :.2f}")
+print ( f" Degrees  of  Freedom : {df}")
+print ( f"p- value : { p_value :.5f}")
+
+if p_value < alpha :
+    print (" Reject  H0: The  energy   efficiency  of the two  designs  is  significantly different .")
+else :
+    print (" Fail  to  reject  H0: No  significant   difference  in  energy   efficiency between  the  two   designs .")

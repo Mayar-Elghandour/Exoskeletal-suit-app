@@ -114,9 +114,11 @@ class _LoadingScreenState extends State<LoadingScreen> {
               const Text(
                 "Empower movement with the power of your mind",
                 style: TextStyle(
-                  fontFamily: 'Pacifico',
-                  fontSize: 20,
-                ),
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'Federant',
+                    color: Colors.black,
+                  ),
                 textAlign: TextAlign.center,
               ),
 
@@ -142,7 +144,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
               width: screenWidth + 150,
               height: screenHeight * 0.65,
               decoration: BoxDecoration(
-                color: Colors.blue[300],
+                color:  Color(0xff98C5EE),
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(1000),
                   topRight: Radius.circular(1000),

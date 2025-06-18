@@ -71,7 +71,7 @@ class _BasicModesState extends State<BasicModes> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 32, vertical: 80),
                 decoration: BoxDecoration(
-                  color: Colors.blue[300],
+                  color:  Color(0xff98C5EE),
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(1000),
                     topRight: Radius.circular(1000),

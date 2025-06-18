@@ -26,12 +26,20 @@ class BluetoothManager {
   }
 
   // Send data to the connected device
-  void sendData(String data) {
+  Future<void> sendData(String data) async {
     if (isConnected) {
       _connection!.output.add(utf8.encode(data + "\r\n"));
+      await _connection!.output.allSent; // wait for data to be sent
     }
   }
 
+  /// Handles incoming data from the connected device.
+  ///
+  /// The data is converted to a string using UTF-8 encoding and
+  /// printed to the console. The actual processing of the received
+  /// data should be implemented in subclasses.
+  ///
+  /// [data] is the received data as a [Uint8List].
   // Handle incoming data
   void _onDataReceived(Uint8List data) {
     String receivedData = utf8.decode(data);
