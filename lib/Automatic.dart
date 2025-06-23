@@ -90,15 +90,15 @@ class _AutomaticState extends State<Automatic> {
           }
         }
 
-        List<String> labels = ["Class 1", "Class 2", "Class 3"];
+        List<String> labels = ["1", "2", "3"];
         String predictedLabel = labels[predictedIndex];
 
         setState(() {
-          currentPrediction = "[$i] → $predictedLabel";
+          currentPrediction = "[$i] → Class $predictedLabel";
         });
 
         try {
-          await BluetoothManager().sendData("[$i] $predictedLabel");
+          await BluetoothManager().sendData("$predictedLabel",context); // send the prediction data as character so it can be dealt with easily in the microcontroller
           print("✅ Sent: $predictedLabel");
         } catch (e) {
           print("❌ Bluetooth send failed: $e");

@@ -1,8 +1,10 @@
 import 'package:exoskeleton_suit_app/Automatic.dart';
 import 'package:exoskeleton_suit_app/BasicModes.dart';
+import 'package:exoskeleton_suit_app/Bluetooth_connection.dart';
 import 'package:exoskeleton_suit_app/Manual.dart';
 import 'package:flutter/material.dart';
 import 'package:exoskeleton_suit_app/bluetooth_manager.dart';
+
 class Advanced extends StatefulWidget {
   const Advanced({Key? key}) : super(key: key);
 
@@ -28,7 +30,7 @@ class _AdvancedState extends State<Advanced> {
                 width: 120,
                 height: 120,
                 decoration: BoxDecoration(
-                  color:  Color(0xff98C5EE),
+                  color: Color(0xff98C5EE),
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
@@ -45,7 +47,7 @@ class _AdvancedState extends State<Advanced> {
             Positioned(
               top: 10, // Moves it up off the top edge
               left: 5, // Moves it left off the screen
-              
+
               child: IconButton(
                 icon: const Icon(
                   Icons.arrow_back,
@@ -72,7 +74,7 @@ class _AdvancedState extends State<Advanced> {
                 width: 120,
                 height: 120,
                 decoration: BoxDecoration(
-                  color:  Color(0xff98C5EE),
+                  color: Color(0xff98C5EE),
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
@@ -135,7 +137,7 @@ class _AdvancedState extends State<Advanced> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 32, vertical: 80),
                 decoration: BoxDecoration(
-                  color:  Color(0xff98C5EE),
+                  color: Color(0xff98C5EE),
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(260),
                     topRight: Radius.circular(260),
@@ -153,23 +155,90 @@ class _AdvancedState extends State<Advanced> {
                   child: Column(
                     children: [
                       ElevatedButton(
-                        onPressed: () {
-                          // Send the message to the connected Bluetooth device
-                          BluetoothManager()
-                              .sendData("hi you are on the automatic mode");
+                        onPressed: () async {
+                          if (BluetoothManager().isConnected) {
+                            // ✅ Send if connected
+                            await BluetoothManager().sendData(
+                              "hi you are on the automatic mode",
+                              context,
+                            );
 
-                          // Navigate to the Automatic mode page
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const Automatic()),
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const Automatic()),
+                            );
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Automatic mode activated!')),
+                            );
+
+                            return;
+                          }
+
+                          // ❌ Not connected → Show dialog to go to Bluetooth page
+                          final shouldConnect = await showDialog<bool>(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: const Text("Bluetooth Not Connected"),
+                              content: const Text(
+                                  "Please connect to a Bluetooth device before sending data."),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context)
+                                        .pop(true); // Proceed to Bluetooth page
+                                  },
+                                  child: const Text("Go to Bluetooth Page"),
+                                ),
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(false),
+                                  child: const Text("Cancel"),
+                                ),
+                              ],
+                            ),
                           );
 
-                          // Show a confirmation SnackBar
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Automatic mode activated!')),
-                          );
+                          if (shouldConnect == true) {
+                            final connected = await Navigator.push<bool>(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => BluetoothPage()),
+                            );
+
+                            //await Future.delayed(const Duration(milliseconds: 200));
+
+                            if (connected == true &&
+                                BluetoothManager().isConnected) {
+                              // ✅ Connected after returning — proceed
+                              await BluetoothManager().sendData(
+                                "hi you are on the automatic mode",
+                                context,
+                              );
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const Automatic()),
+                              );
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Automatic mode activated!')),
+                              );
+                            } else {
+                              // ❌ Still not connected
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text(
+                                        "⚠️ Still not connected to a device")),
+                              );
+                              print(
+                                  "❌ User didn't connect or connection failed.");
+                            }
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(

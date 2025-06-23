@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'bluetooth_manager.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class BluetoothPage extends StatefulWidget {
   @override
@@ -14,21 +15,73 @@ class _BluetoothPageState extends State<BluetoothPage> {
   @override
   void initState() {
     super.initState();
+    BluetoothManager().resetConnection();
     _fetchBondedDevices();
   }
 
   Future<void> _fetchBondedDevices() async {
+    await _requestPermissions();
+    //await Future.delayed(const Duration(seconds: 1));
+
+    bool isEnabled = await FlutterBluetoothSerial.instance.isEnabled ?? false;
+    if (!isEnabled) {
+      await FlutterBluetoothSerial.instance.requestEnable();
+      //await Future.delayed(const Duration(seconds: 1));
+    }
+
     List<BluetoothDevice> devices =
         await FlutterBluetoothSerial.instance.getBondedDevices();
+
     setState(() {
       _devices = devices;
       _isLoading = false;
     });
   }
 
-  void _connectToDevice(BluetoothDevice device) async {
-    await BluetoothManager().connect(device);
-    Navigator.pop(context); // Close device list after connecting
+  Future<void> _requestPermissions() async {
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.bluetooth,
+      Permission.bluetoothScan,
+      Permission.bluetoothConnect,
+      Permission.location,
+    ].request();
+
+    if (statuses.values.any((status) => status != PermissionStatus.granted)) {
+      // Show alert if not granted
+      await showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text("Permission Required"),
+          content:
+              const Text("Bluetooth and location permissions are required."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  Future<void> _connectToDevice(BluetoothDevice device) async {
+    //BluetoothManager().disconnect();
+    await Future.delayed(const Duration(milliseconds: 1000));
+    final success = await BluetoothManager().connect(device);
+
+    setState(() => _isLoading = false);
+
+    if (success) {
+      print("🟢 Device connected successfully.");
+      Navigator.pop(context, true); // Return success
+    } else {
+      print("🔴 Device connection failed.");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("❌ Failed to connect to device")),
+      );
+      Navigator.pop(context, false); // Return failure
+    }
   }
 
   @override
@@ -46,61 +99,45 @@ class _BluetoothPageState extends State<BluetoothPage> {
           fontWeight: FontWeight.bold,
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 120), // Space from AppBar
-        child: _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                itemCount: _devices.length,
-                separatorBuilder: (context, index) => const Column(
-                  children: [
-                    SizedBox(height: 10),
-                    Divider(color: Colors.white, thickness: 1),
-                    SizedBox(height: 10),
-                  ],
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _devices.isEmpty
+              ? const Center(child: Text("No bonded devices found."))
+              : ListView.separated(
+                  padding: const EdgeInsets.only(top: 100, left: 20, right: 20),
+                  itemCount: _devices.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 20),
+                  itemBuilder: (context, index) {
+                    BluetoothDevice device = _devices[index];
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 4,
+                            offset: Offset(2, 2),
+                          ),
+                        ],
+                      ),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 16),
+                        title: Text(
+                          device.name ?? 'Unknown Device',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w600, fontSize: 18),
+                        ),
+                        subtitle: Text(device.address,
+                            style: const TextStyle(fontSize: 14)),
+                        trailing: const Icon(Icons.bluetooth_connected,
+                            color: Color(0xFF98C5EE)),
+                        onTap: () => _connectToDevice(device),
+                      ),
+                    );
+                  },
                 ),
-                itemBuilder: (context, index) {
-                  BluetoothDevice device = _devices[index];
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 4,
-                          offset: Offset(2, 2),
-                        ),
-                      ],
-                    ),
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 16,
-                      ),
-                      title: Text(
-                        device.name ?? 'Unknown Device',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18,
-                        ),
-                      ),
-                      subtitle: Text(
-                        device.address,
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                      trailing: const Icon(Icons.bluetooth_connected),
-                      iconColor: const Color(0xFF98C5EE),
-                      onTap: (){
-                        _connectToDevice(device);
-                        Navigator.pop(context);
-                      }
-                    ),
-                  );
-                },
-              ),
-      ),
     );
   }
 }
