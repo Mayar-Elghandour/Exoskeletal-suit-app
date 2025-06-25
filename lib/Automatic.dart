@@ -107,7 +107,7 @@ class _AutomaticState extends State<Automatic> {
           );
         }
 
-        await Future.delayed(Duration(seconds: 2));
+        await Future.delayed(Duration(seconds: 1));
       }
 
       setState(() {

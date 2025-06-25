@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // ✅ For MethodChannel
 import 'package:exoskeleton_suit_app/LoadingScreen.dart';
 import 'package:exoskeleton_suit_app/bluetooth_manager.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized(); // ✅ Ensures proper binding before runApp
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MainApp());
 }
+
+// ✅ Define a method channel for Python bridge (Chaquopy)
+const platform = MethodChannel('mat_channel');
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
@@ -23,7 +27,7 @@ class MainApp extends StatelessWidget {
   }
 }
 
-// ✅ Add this mixin to handle lifecycle cleanup
+// ✅ App lifecycle handler (no changes to BluetoothManager logic)
 class AppLifecycleHandler extends StatefulWidget {
   final Widget child;
 
@@ -41,7 +45,6 @@ class _AppLifecycleHandlerState extends State<AppLifecycleHandler>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     BluetoothManager().resetConnection();
-
   }
 
   @override
@@ -50,21 +53,29 @@ class _AppLifecycleHandlerState extends State<AppLifecycleHandler>
     super.dispose();
   }
 
-  // ✅ Handle app lifecycle
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async{
-    if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.detached) {
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.detached) {
       BluetoothManager().disconnect();
     } else if (state == AppLifecycleState.resumed) {
-      BluetoothManager().resetConnection(); // optional: refresh clean state
+      BluetoothManager().resetConnection();
       await Future.delayed(Duration(milliseconds: 1000));
-
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return widget.child;
+  }
+}
+
+// ✅ Example: Function to call Python from Flutter via Android MethodChannel
+Future<void> callPythonProcessing(String matFilePath) async {
+  try {
+    final result = await platform.invokeMethod('processMat', {'path': matFilePath});
+    print('📊 Python processing result: $result');
+    // You can now use the result in your UI
+  } catch (e) {
+    print('❌ Failed to call Python processing: $e');
   }
 }

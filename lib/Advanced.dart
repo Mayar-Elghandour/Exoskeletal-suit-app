@@ -4,6 +4,7 @@ import 'package:exoskeleton_suit_app/Bluetooth_connection.dart';
 import 'package:exoskeleton_suit_app/Manual.dart';
 import 'package:flutter/material.dart';
 import 'package:exoskeleton_suit_app/bluetooth_manager.dart';
+// import 'package:exoskeleton_suit_app/mat_processing_automatic.dart';
 
 class Advanced extends StatefulWidget {
   const Advanced({Key? key}) : super(key: key);
@@ -162,7 +163,7 @@ class _AdvancedState extends State<Advanced> {
                               "hi you are on the automatic mode",
                               context,
                             );
-
+                            print("✅ Data sent to device.'hi you are on the automatic mode'");
                             Navigator.push(
                               context,
                               MaterialPageRoute(
