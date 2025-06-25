@@ -1,3 +1,17 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        jcenter()
+        maven { url "https://chaquo.com/maven" }
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:8.0.1"        // make sure your Android Gradle Plugin version matches
+        classpath "com.chaquo.python:gradle:14.0.2"              // ✅ Add this line for Chaquopy
+    }
+}
+
+
 allprojects {
     repositories {
         google()
