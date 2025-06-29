@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'generated/app_localizations.dart';
 
 class ModeOption extends StatelessWidget {
   final String label;

@@ -1,5 +1,6 @@
 import 'package:exoskeleton_suit_app/BasicModes.dart';
 import 'package:flutter/material.dart';
+import 'generated/app_localizations.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({Key? key}) : super(key: key);

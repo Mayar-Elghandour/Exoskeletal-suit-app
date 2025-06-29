@@ -1,6 +1,7 @@
 import 'package:exoskeleton_suit_app/Advanced.dart';
 import 'package:exoskeleton_suit_app/BasicModes.dart';
 import 'package:flutter/material.dart';
+import 'generated/app_localizations.dart';
 
 class Beginner extends StatefulWidget {
   const Beginner({super.key});
@@ -144,13 +145,13 @@ class _BeginnerState extends State<Beginner> {
               ),
 
               // Title
-              const Positioned(
+               Positioned(
                 top: 60,
                 left: 0,
                 right: 0,
                 child: Center(
                   child: Text(
-                    'Instructions',
+                    AppLocalizations.of(context)!.instructions,
                     style: TextStyle(
                       fontSize: 54,
                       fontWeight: FontWeight.w700,
@@ -166,9 +167,9 @@ class _BeginnerState extends State<Beginner> {
                 padding: const EdgeInsets.only(top: 150, left: 30),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children:  [
                     Text(
-                      "For grabbing:",
+                      AppLocalizations.of(context)!.for_grabbing,
                       style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.w400,
@@ -177,7 +178,7 @@ class _BeginnerState extends State<Beginner> {
                       ),
                     ),
                     Text(
-                      "think of your right hand.",
+                      AppLocalizations.of(context)!.think_of_your_right_hand,
                       style: TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.w400,
@@ -186,7 +187,7 @@ class _BeginnerState extends State<Beginner> {
                       ),
                     ),
                     Text(
-                      "For Elbow up:",
+                      AppLocalizations.of(context)!.for_elbow_up,
                       style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.w400,
@@ -195,7 +196,7 @@ class _BeginnerState extends State<Beginner> {
                       ),
                     ),
                     Text(
-                      "think of your left hand.",
+                      AppLocalizations.of(context)!.think_of_your_left_hand,
                       style: TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.w400,
@@ -204,7 +205,7 @@ class _BeginnerState extends State<Beginner> {
                       ),
                     ),
                     Text(
-                      "For Elbow down:",
+                      AppLocalizations.of(context)!.for_elbow_down,
                       style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.w400,
@@ -213,7 +214,7 @@ class _BeginnerState extends State<Beginner> {
                       ),
                     ),
                     Text(
-                      "think neutrally",
+                      AppLocalizations.of(context)!.think_neutrally,
                       style: TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.w400,
@@ -257,8 +258,8 @@ class _BeginnerState extends State<Beginner> {
                           borderRadius: BorderRadius.circular(30),
                         ),
                       ),
-                      child: const Text(
-                        "Get Started",
+                      child:  Text(
+                        AppLocalizations.of(context)!.get_started,
                         style: TextStyle(
                           fontSize: 24,
                           fontFamily: 'Golos_Text',

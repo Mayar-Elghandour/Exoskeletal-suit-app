@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
-import 'bluetooth_manager.dart';
+//import 'bluetooth_managerrr2.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'bluetooth_manager.dart';
+import 'generated/app_localizations.dart';
 
 class BluetoothPage extends StatefulWidget {
   @override
@@ -51,13 +53,13 @@ class _BluetoothPageState extends State<BluetoothPage> {
       await showDialog(
         context: context,
         builder: (_) => AlertDialog(
-          title: const Text("Permission Required"),
+          title:  Text(AppLocalizations.of(context)!.permission_required),
           content:
-              const Text("Bluetooth and location permissions are required."),
+               Text(AppLocalizations.of(context)!.bluetooth_and_location_permissions_are_required),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text("OK"),
+              child:  Text(AppLocalizations.of(context)!.ok),
             ),
           ],
         ),
@@ -78,7 +80,7 @@ class _BluetoothPageState extends State<BluetoothPage> {
     } else {
       print("🔴 Device connection failed.");
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("❌ Failed to connect to device")),
+         SnackBar(content: Text(AppLocalizations.of(context)!.failed_to_connect_to_a_device)),
       );
       Navigator.pop(context, false); // Return failure
     }
@@ -89,7 +91,7 @@ class _BluetoothPageState extends State<BluetoothPage> {
     return Scaffold(
       backgroundColor: const Color(0xFF98C5EE),
       appBar: AppBar(
-        title: const Text('Select Device'),
+        title:  Text(AppLocalizations.of(context)!.select_device),
         backgroundColor: Colors.white,
         elevation: 2,
         iconTheme: const IconThemeData(color: Color(0xff98c5ee)),
@@ -100,9 +102,9 @@ class _BluetoothPageState extends State<BluetoothPage> {
         ),
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ?  Center(child: CircularProgressIndicator())
           : _devices.isEmpty
-              ? const Center(child: Text("No bonded devices found."))
+              ?  Center(child: Text(AppLocalizations.of(context)!.no_bonded_devices_found))
               : ListView.separated(
                   padding: const EdgeInsets.only(top: 100, left: 20, right: 20),
                   itemCount: _devices.length,
@@ -125,7 +127,7 @@ class _BluetoothPageState extends State<BluetoothPage> {
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 20, vertical: 16),
                         title: Text(
-                          device.name ?? 'Unknown Device',
+                          device.name ?? AppLocalizations.of(context)!.unknown_device,
                           style: const TextStyle(
                               fontWeight: FontWeight.w600, fontSize: 18),
                         ),

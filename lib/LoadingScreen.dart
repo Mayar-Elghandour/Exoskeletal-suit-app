@@ -1,10 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:exoskeleton_suit_app/BasicModes.dart';
-
-void main() {
-  runApp(const MyApp());
-}
+import 'generated/app_localizations.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -28,20 +25,27 @@ class LoadingScreen extends StatefulWidget {
 
 class _LoadingScreenState extends State<LoadingScreen> {
   late Timer _loadingTimer;
-  String _loadingText = "Loading";
+  String _loadingText ="";
   int _dotCount = 0;
-
+  
   @override
   void initState() {
     super.initState();
+    _loadingText = "Loading";
 
-    // Loading text animation
+    
+
+    // Delay to wait for context to be available
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    final local = AppLocalizations.of(context)!;
+    _loadingText = local.loading;
     _loadingTimer = Timer.periodic(const Duration(milliseconds: 400), (timer) {
       setState(() {
-        _dotCount = (_dotCount + 1) % 4; // Cycle between 0-3
-        _loadingText = "Loading${'.' * _dotCount}";
+        _dotCount = (_dotCount + 1) % 4;
+        _loadingText = "${local.loading}${'.' * _dotCount}";
       });
     });
+  });
 
     // Navigate to next screen
     Timer(const Duration(seconds: 5), () {
@@ -62,6 +66,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+    
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -111,8 +116,8 @@ class _LoadingScreenState extends State<LoadingScreen> {
               ),
 
               const SizedBox(height: 80),
-              const Text(
-                "Empower movement with the power of your mind",
+               Text(
+                AppLocalizations.of(context)!.empower_movement_with_the_power_of_your_mind,
                 style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w700,

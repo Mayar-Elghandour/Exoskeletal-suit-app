@@ -2,6 +2,7 @@ import 'package:exoskeleton_suit_app/BasicModes.dart';
 import 'package:exoskeleton_suit_app/Bluetooth_connection.dart';
 import 'package:exoskeleton_suit_app/Language.dart';
 import 'package:exoskeleton_suit_app/Themes.dart';
+import 'generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class Settings extends StatefulWidget {
@@ -24,7 +25,7 @@ class _SettingsState extends State<Settings> {
             Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => const BasicModes()),);
           },
         ),
-        title: const Text('Settings',
+        title:  Text(AppLocalizations.of(context)!.settings,
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700)),
       ),
       body: Padding(
@@ -33,7 +34,7 @@ class _SettingsState extends State<Settings> {
           children: [
             _buildRoundedTile(
               icon: Icons.bluetooth,
-              title: "Bluetooth connection",
+              title: AppLocalizations.of(context)!.bluetooth_connection,
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => BluetoothPage()));
@@ -44,7 +45,7 @@ class _SettingsState extends State<Settings> {
             const SizedBox(height: 20),
             _buildRoundedTile(
               icon: Icons.color_lens,
-              title: "Themes",
+              title: AppLocalizations.of(context)!.themes,
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => const ThemePage()));
@@ -55,10 +56,10 @@ class _SettingsState extends State<Settings> {
             const SizedBox(height: 20),
             _buildRoundedTile(
               icon: Icons.language,
-              title: "Languages",
+              title: AppLocalizations.of(context)!.language,
               onTap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const Language()));
+                    MaterialPageRoute(builder: (context) => const LanguagePage()));
               },
             ),
           ],

@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'Bluetooth_connection.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'generated/app_localizations.dart';
 
 class BluetoothManager {
@@ -41,7 +42,6 @@ class BluetoothManager {
 }
 
 
-
   Future<bool> connect(BluetoothDevice device) async {
   // ✅ Check and close any existing connection
   if (_connection != null) {
@@ -66,6 +66,9 @@ class BluetoothManager {
     // ✅ Now it's safe to connect
     _connection = await BluetoothConnection.toAddress(device.address);
     _lastConnectedDevice = device;
+print("🔧 Saving device address: ${device.address}");
+await saveDefaultDevice(device.address);
+print("✅ Device address saved.");
 
     print("✅ Connected to ${device.name}");
 
@@ -85,14 +88,48 @@ class BluetoothManager {
 }
 
 
-Future<bool> reconnectToLastDevice() async {
-  if (_lastConnectedDevice != null) {
-    print("🔄 Trying to reconnect to ${_lastConnectedDevice!.name}");
-    return await connect(_lastConnectedDevice!);
-  }
-  return false;
+Future<void> saveDefaultDevice(String address) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance(); 
+  await prefs.setString('default_bluetooth_address', address);
+  print("💾 Saved default Bluetooth address: $address");
 }
 
+Future<String?> getDefaultBluetoothDevice() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString('default_bluetooth_address');
+}
+
+Future<void> autoConnectIfPossible() async {
+  String? address =  await getDefaultBluetoothDevice();
+  print("🔑 Default Bluetooth address: $address");
+ // ✅ Correct function
+
+  if (address != null) {
+    try {
+      List<BluetoothDevice> bondedDevices = await FlutterBluetoothSerial.instance.getBondedDevices();
+
+      BluetoothDevice? device;
+      for (var d in bondedDevices) {
+        if (d.address == address) {
+          device = d;
+          break;
+        }
+      }
+
+      if (device != null) {
+        print("🔄 Auto-connecting to ${device.name}");
+        await connect(device);
+        print("✅ Auto-connection successful.");
+      } else {
+        print("⚠️ Default device not found among bonded devices.");
+      }
+    } catch (e) {
+      print("❌ Auto-connect failed: $e");
+    }
+  } else {
+    print("ℹ️ No default Bluetooth device set.");
+  }
+}
 
   /// Attempt to reconnect up to 3 times
   /* Future<void> _attemptReconnect() async {

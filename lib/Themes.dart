@@ -1,6 +1,7 @@
 import 'package:exoskeleton_suit_app/BasicModes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'generated/app_localizations.dart';
 
 // ThemeNotifier to manage theme changes
 class ThemeNotifier extends ChangeNotifier {

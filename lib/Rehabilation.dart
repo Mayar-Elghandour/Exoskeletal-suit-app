@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:exoskeleton_suit_app/Advanced.dart';
 import 'package:exoskeleton_suit_app/BasicModes.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
-
+import 'generated/app_localizations.dart';
 
 class Rehabilation extends StatefulWidget {
   const Rehabilation({Key? key}) : super(key: key);
@@ -112,7 +112,7 @@ class _RehabilationState extends State<Rehabilation> {
               right: 0,
               child: Center(
                 child: Text(
-                  'Rehabilation',
+                  AppLocalizations.of(context)!.rehabilation,
                   style: TextStyle(
                     fontSize: 50,
                     fontWeight: FontWeight.w900,
@@ -144,7 +144,7 @@ class _RehabilationState extends State<Rehabilation> {
                   elevation: 5,
                 ),
                 child: Text(
-                  'turn off',
+                  AppLocalizations.of(context)!.turn_off,
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w900,
@@ -179,7 +179,7 @@ class _RehabilationState extends State<Rehabilation> {
                   child: Column(
                     children: [
                       Text(
-                        '''Note:\nTo switch to another mode, turn off Rehabilation mode.''',
+                        AppLocalizations.of(context)!.note_To_switch_to_another_mode_turn_off_rehabilation_mode,
                         style: TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.w800,

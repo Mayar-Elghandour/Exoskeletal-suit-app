@@ -1,10 +1,12 @@
-import 'package:exoskeleton_suit_app/Automatic.dart';
+//import 'package:exoskeleton_suit_app/Automatic.dart';
 import 'package:exoskeleton_suit_app/BasicModes.dart';
 import 'package:exoskeleton_suit_app/Bluetooth_connection.dart';
 import 'package:exoskeleton_suit_app/Manual.dart';
+import 'package:exoskeleton_suit_app/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:exoskeleton_suit_app/bluetooth_manager.dart';
-// import 'package:exoskeleton_suit_app/mat_processing_automatic.dart';
+import 'package:exoskeleton_suit_app/xml_processing_automatic.dart';
+import 'generated/app_localizations.dart';
 
 class Advanced extends StatefulWidget {
   const Advanced({Key? key}) : super(key: key);
@@ -116,7 +118,7 @@ class _AdvancedState extends State<Advanced> {
               right: 0,
               child: Center(
                 child: Text(
-                  'Advanced Modes',
+                  AppLocalizations.of(context)!.advanced_modes,
                   style: TextStyle(
                     fontSize: 40,
                     fontWeight: FontWeight.w900,
@@ -171,8 +173,8 @@ class _AdvancedState extends State<Advanced> {
                             );
 
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('Automatic mode activated!')),
+                               SnackBar(
+                                  content: Text(AppLocalizations.of(context)!.automatic_mode_activated)),
                             );
 
                             return;
@@ -182,21 +184,21 @@ class _AdvancedState extends State<Advanced> {
                           final shouldConnect = await showDialog<bool>(
                             context: context,
                             builder: (_) => AlertDialog(
-                              title: const Text("Bluetooth Not Connected"),
-                              content: const Text(
-                                  "Please connect to a Bluetooth device before sending data."),
+                              title:  Text(AppLocalizations.of(context)!.bluetooth_not_connected),
+                              content:  Text(
+                                  AppLocalizations.of(context)!.please_connect_to_a_Bluetooth_device_before_sending_data),
                               actions: [
                                 TextButton(
                                   onPressed: () {
                                     Navigator.of(context)
                                         .pop(true); // Proceed to Bluetooth page
                                   },
-                                  child: const Text("Go to Bluetooth Page"),
+                                  child:  Text(AppLocalizations.of(context)!.go_to_bluetooth_page),
                                 ),
                                 TextButton(
                                   onPressed: () =>
                                       Navigator.of(context).pop(false),
-                                  child: const Text("Cancel"),
+                                  child:  Text(AppLocalizations.of(context)!.cancel),
                                 ),
                               ],
                             ),
@@ -226,18 +228,18 @@ class _AdvancedState extends State<Advanced> {
                               );
 
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Automatic mode activated!')),
+                                 SnackBar(
+                                    content: Text(AppLocalizations.of(context)!.automatic_mode_activated)),
                               );
                             } else {
                               // ❌ Still not connected
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
+                                 SnackBar(
                                     content: Text(
-                                        "⚠️ Still not connected to a device")),
+                                        AppLocalizations.of(context)!.still_not_connected_to_a_device)),
                               );
                               print(
-                                  "❌ User didn't connect or connection failed.");
+                                  AppLocalizations.of(context)!.user_didnt_connect_or_connection_failed);
                             }
                           }
                         },
@@ -251,8 +253,8 @@ class _AdvancedState extends State<Advanced> {
                               const Color.fromARGB(241, 255, 255, 255),
                           elevation: 4,
                         ),
-                        child: const Text(
-                          "Automatic",
+                        child:  Text(
+                          AppLocalizations.of(context)!.automatic,
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 30,
@@ -281,8 +283,8 @@ class _AdvancedState extends State<Advanced> {
                               const Color.fromARGB(241, 255, 255, 255),
                           elevation: 4,
                         ),
-                        child: const Text(
-                          "Manual",
+                        child:  Text(
+                          AppLocalizations.of(context)!.manual,
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 36,

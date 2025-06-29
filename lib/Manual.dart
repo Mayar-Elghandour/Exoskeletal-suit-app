@@ -2,6 +2,7 @@ import 'package:exoskeleton_suit_app/BasicModes.dart';
 import 'package:exoskeleton_suit_app/Eating.dart';
 import 'package:exoskeleton_suit_app/Reading.dart';
 import 'package:exoskeleton_suit_app/Rehabilation.dart';
+import 'package:exoskeleton_suit_app/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class Manual extends StatefulWidget {
@@ -31,7 +32,7 @@ class _ManualState extends State<Manual> {
                 width: 120,
                 height: 120,
                 decoration: BoxDecoration(
-                  color: Colors.blue[300],
+                  color: Color(0xFF98C5EE),
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
@@ -62,7 +63,7 @@ class _ManualState extends State<Manual> {
                     MaterialPageRoute(builder: (context) => const BasicModes()),
                   );
                   ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Automatic mode activated!')),
+                      SnackBar(content: Text(AppLocalizations.of(context)!.automatic_mode_activated),),
                     );
                 },
                 padding: EdgeInsets.zero,
@@ -78,7 +79,7 @@ class _ManualState extends State<Manual> {
                 width: 120,
                 height: 120,
                 decoration: BoxDecoration(
-                  color: Colors.blue[300],
+                  color: Color(0xFF98C5EE),
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
@@ -119,7 +120,7 @@ class _ManualState extends State<Manual> {
               right: 0,
               child: Center(
                 child: Text(
-                  'Manual Modes',
+                  AppLocalizations.of(context)!.manual_modes,
                   style: TextStyle(
                   fontSize: 48,
                   fontWeight: FontWeight.w700,
@@ -140,7 +141,7 @@ class _ManualState extends State<Manual> {
                 width: screenWidth,
                 padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 80),
                 decoration: BoxDecoration(
-                  color: Colors.blue[300],
+                  color: Color(0xFF98C5EE),
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(1000),
                     topRight: Radius.circular(1000),
@@ -172,8 +173,8 @@ class _ManualState extends State<Manual> {
                       backgroundColor: const Color.fromARGB(241, 255, 255, 255),
                       elevation: 4,
                     ),
-                    child: const Text(
-                      "Eating",
+                    child:  Text(
+                      AppLocalizations.of(context)!.eating,
                       style: TextStyle(color: Colors.black,
                       fontSize: 24,
                       fontWeight: FontWeight.w500,
@@ -196,8 +197,8 @@ class _ManualState extends State<Manual> {
                       backgroundColor: const Color.fromARGB(241, 255, 255, 255),
                       elevation: 4,
                     ),
-                    child: const Text(
-                      "Reading",
+                    child:  Text(
+                      AppLocalizations.of(context)!.reading,
                       style: TextStyle(color: Colors.black,
                       fontSize: 24,
                       fontWeight: FontWeight.w500,
@@ -220,8 +221,8 @@ class _ManualState extends State<Manual> {
                       backgroundColor: const Color.fromARGB(241, 255, 255, 255),
                       elevation: 4,
                     ),
-                    child: const Text(
-                      "Rehabilation",
+                    child:  Text(
+                      AppLocalizations.of(context)!.rehabilation,
                       style: TextStyle(color: Colors.black,
                       fontSize: 24,
                       fontWeight: FontWeight.w500,

@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import 'package:exoskeleton_suit_app/bluetooth_manager.dart';
 import 'dart:convert';
+import 'generated/app_localizations.dart';
 
 class Automatic extends StatefulWidget {
   const Automatic({Key? key}) : super(key: key);
@@ -45,13 +46,13 @@ class _AutomaticState extends State<Automatic> {
         allowedExtensions: ['json'],
       );
 
-      if (result == null) throw Exception("No file selected.");
+      if (result == null) throw Exception(AppLocalizations.of(context)!.no_file_selected);
 
       final file = File(result.files.single.path!);
       final content = await file.readAsString();
       final dynamic parsed = jsonDecode(content);
 
-      if (!(parsed is List)) throw Exception("Expected a JSON array.");
+      if (!(parsed is List)) throw Exception(AppLocalizations.of(context)!.expected_a_json_array);
 
       setState(() {
         isRunning = true;

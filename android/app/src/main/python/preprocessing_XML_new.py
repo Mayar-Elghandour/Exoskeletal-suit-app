@@ -61,7 +61,7 @@ def process_eeg_data(electrode_data, sfreq=200, target_samples=200):
                          mode='constant')
     return norm_data
 
-def xml_to_json_corrected(input_path, output_folder, target_samples=200):
+def xml_to_json_corrected(input_path, target_samples=200):
     """Complete XML to JSON pipeline with corrected processing"""
     # Channel configuration
     ch_names = ['Fp1', 'Fp2', 'F3', 'F4', 'C3', 'C4', 'P3', 'P4', 'O1', 'O2', 
@@ -70,7 +70,7 @@ def xml_to_json_corrected(input_path, output_folder, target_samples=200):
     keep_indices = [i for i, ch in enumerate(ch_names) if ch not in drop_channels]
     sfreq = 200
     
-    os.makedirs(output_folder, exist_ok=True)
+    
     
     # Get input files
     if os.path.isdir(input_path):
@@ -78,6 +78,11 @@ def xml_to_json_corrected(input_path, output_folder, target_samples=200):
     else:
         xml_files = [input_path] if input_path.endswith('.xml') else []
 
+ # Safety check
+    if not xml_files:
+        raise FileNotFoundError(f"No XML file found at path: {input_path}")
+
+    # Process XML files
     for xml_file in xml_files:
         try:
             # 1. Load XML
@@ -100,7 +105,10 @@ def xml_to_json_corrected(input_path, output_folder, target_samples=200):
             
             # 5. Prepare JSON output
             base_name = os.path.splitext(os.path.basename(xml_file))[0]
+
+            output_folder = os.path.dirname(xml_file)
             output_path = os.path.join(output_folder, f"{base_name}.json")
+            os.makedirs(output_folder, exist_ok=True)
             
             label_element = root.find('label')
             label = label_element.text if label_element is not None else None
@@ -116,22 +124,21 @@ def xml_to_json_corrected(input_path, output_folder, target_samples=200):
                 "eeg_data": norm_data.tolist(),
                 "timestamps": np.linspace(0, target_samples/sfreq, target_samples).tolist()
             }
-            
+
             # 6. Save JSON
             with open(output_path, 'w') as f:
                 json.dump(eeg_data, f, indent=4)
-            
+            print(f'true label is {label}')
+            #print(f'preproccessed data SHAPEis {len(eeg_data["eeg_data"])}')
             print(f"Successfully processed {os.path.basename(xml_file)}")
             
         except Exception as e:
             print(f"Error processing {xml_file}: {str(e)}")
 
-    print(f"Processing complete. Output saved to {output_folder}")
-
-# Example usage
-if __name__ == "__main__":
-   ''' xml_to_json_corrected(
-        input_path=r'E:\Exoskeleton arm suppor with EEg\EEG\large data\CLA_Processing\session test XML\trial_10.xml',
-        output_folder='preprocessed_json_minimal',
-        target_samples=200
-    )'''
+    if output_path:
+        print(f"✅ All processing done and preprocessed EEG data returned of file {xml_file}")  
+        #print(f'processed data is {eeg_data["eeg_data"]}')
+        #print(f'preproccessed data SHAPEis {type(eeg_data["eeg_data"])}')
+        return json.dumps(eeg_data["eeg_data"])
+    else:
+        raise RuntimeError("No file was successfully processed.")

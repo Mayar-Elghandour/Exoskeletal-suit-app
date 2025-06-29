@@ -5,6 +5,9 @@ import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:exoskeleton_suit_app/bluetooth_manager.dart';
 import 'package:exoskeleton_suit_app/MethodChannel.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'generated/app_localizations.dart';
+
 
 class Automatic extends StatefulWidget {
   const Automatic({Key? key}) : super(key: key);
@@ -18,99 +21,112 @@ class _AutomaticState extends State<Automatic> {
   bool isModelLoaded = false;
   bool isRunning = false;
   String? currentPrediction;
-
+  
+  
+  
+  
   @override
   void initState() {
     super.initState();
+    
     loadModel();
   }
 
-  Future<void> loadModel() async {
-    try {
-      interpreter = await Interpreter.fromAsset('assets/models/model.tflite');
-      print("✅ Model loaded successfully.");
-      setState(() {
-        isModelLoaded = true;
-      });
-    } catch (e) {
-      print("❌ Error loading model: $e");
-    }
-  }
 
+void checkAsset() async {
+  try {
+    await rootBundle.load('assets/models/model.tflite');
+    print('✅ Asset exists in bundle');
+  } catch (e) {
+    print('❌ Asset loading failed: $e');
+  }
+}
+  Future<void> loadModel() async {
+          try {
+            
+            print("⏳ Starting model load...");
+            // Load the asset data manually
+            final data = await rootBundle.load('assets/models/model.tflite');
+            final buffer = data.buffer.asUint8List();
+            interpreter = await Interpreter.fromBuffer(buffer);
+           // print("✅ Model loaded in ${stopwatch.elapsedMilliseconds} ms");
+           print("✅ Model loaded successfully.");
+            setState(() {
+              isModelLoaded = true;
+            });
+          } catch (e) {
+            print("❌ Error loading model: $e");
+          }
+        }
   Future<void> runPrediction() async {
     try {
+      final local = AppLocalizations.of(context)!;
+      
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
-        allowedExtensions: ['mat'],
+        allowedExtensions: ['xml'],
       );
+      
+      print("📊 Selected file: $result");
+     
+      if (result == null) throw Exception(AppLocalizations.of(context)!.no_file_selected);
 
-      if (result == null) throw Exception("No file selected.");
-      final file_path =result.files.single.path!;
-      final output_path = await MatChannelService.preprocessXml(file_path);
-      //final file = File(output_path);
+      final stopwatch = Stopwatch()..start();
 
-      //final content = await file.readAsString();
-      //final dynamic parsed = jsonDecode(content);
-
-      final dynamic parsed = output_path;
-      if (!(output_path is List)) throw Exception("Expected a JSON array.");
+      final file = result.files.single.path!;
+      //print("📊 Selected path: $file");
+      final eeg = await MatChannelService.preprocessXml(file);
+      //print("📊 Preprocessing result: $eeg");
 
       setState(() {
         isRunning = true;
         currentPrediction = null;
+      });      
+
+      if (eeg.length != 19 || eeg[0].length != 200) {
+        print("❌ Invalid shape: ${eeg.length} x ${eeg[0].length}");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(local.invalid_eeg_shape)),
+        );
+        return;
+      }
+      final input = [
+  eeg.map((channel) => channel.map((v) => [v]).toList()).toList()
+];  // shape: [1, 19, 200, 1]
+
+      final output = List.filled(3, 0.0).reshape([1, 3]);
+
+      interpreter?.run(input, output);
+
+      int predictedIndex = 0;
+      double maxScore = output[0][0];
+      for (int j = 1; j < output[0].length; j++) {
+        if (output[0][j] > maxScore) {
+          maxScore = output[0][j];
+          predictedIndex = j;
+        }
+      }
+
+      List<String> labels = ["1", "2", "3"];
+      String predictedLabel = labels[predictedIndex];
+
+      setState(() {
+        
+currentPrediction = "[$predictedIndex] → ${local.classification} $predictedLabel";
       });
 
-      for (var i = 0; i < parsed.length && isRunning; i++) {
-        if (!(parsed[i] is Map<String, dynamic>) || !parsed[i].containsKey('signal')) continue;
-
-        List<dynamic> signalRaw = parsed[i]['signal'];
-        List<List<double>> signal = signalRaw.map<List<double>>((row) {
-          return (row as List).map<double>((e) => e.toDouble()).toList();
-        }).toList();
-
-        if (signal.length != 19 || signal[0].length != 200) {
-          print("❌ Skipping invalid shape: ${signal.length}, ${signal[0].length}");
-          continue;
-        }
-
-        List<List<double>> transposed = List.generate(
-          signal[0].length,
-          (i) => List.generate(signal.length, (j) => signal[j][i]),
+      try {
+        await BluetoothManager().sendData("$predictedLabel",context); // send the prediction data as character so it can be dealt with easily in the microcontroller
+        print("✅ Sent: $predictedLabel");
+      } catch (e) {
+        print("❌ Bluetooth send failed: $e");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("${local.bluetooth_send_failed} $e")),
         );
-
-        final input = [transposed];
-        final output = List.filled(3, 0.0).reshape([1, 3]);
-
-        interpreter?.run(input, output);
-
-        int predictedIndex = 0;
-        double maxScore = output[0][0];
-        for (int j = 1; j < output[0].length; j++) {
-          if (output[0][j] > maxScore) {
-            maxScore = output[0][j];
-            predictedIndex = j;
-          }
-        }
-
-        List<String> labels = ["1", "2", "3"];
-        String predictedLabel = labels[predictedIndex];
-
-        setState(() {
-          currentPrediction = "[$i] → Class $predictedLabel";
-        });
-
-        try {
-          await BluetoothManager().sendData("$predictedLabel",context); // send the prediction data as character so it can be dealt with easily in the microcontroller
-          print("✅ Sent: $predictedLabel");
-        } catch (e) {
-          print("❌ Bluetooth send failed: $e");
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Bluetooth send failed: $e")),
-          );
-        }
-
-        await Future.delayed(Duration(seconds: 2));
       }
+    print("✅ system sent data in ${stopwatch.elapsedMilliseconds} ms");
+    stopwatch..reset()..start();
+      await Future.delayed(Duration(seconds: 2));
 
       setState(() {
         isRunning = false;
@@ -118,14 +134,16 @@ class _AutomaticState extends State<Automatic> {
       });
     } catch (e) {
       print("❌ Prediction error: $e");
+      final local = AppLocalizations.of(context)!;  
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
-          title: Text("Error"),
-          content: Text("Something went wrong: $e"),
+           
+          title: Text(local.error),
+          content: Text("${local.something_went_wrong} $e"),
           actions: [
             TextButton(
-                onPressed: () => Navigator.pop(context), child: Text("OK")),
+                onPressed: () => Navigator.pop(context), child: Text(local.ok)),
           ],
         ),
       );
@@ -166,7 +184,8 @@ class _AutomaticState extends State<Automatic> {
                 top: 10,
                 left: 5,
                 child: IconButton(
-                  icon: Icon(Icons.arrow_back, size: 50, color: Color(0xff98C5EE)),
+                  icon: Icon(Icons.arrow_back,
+                      size: 50, color: Color(0xff98C5EE)),
                   onPressed: () {
                     Navigator.pushReplacement(
                       context,
@@ -200,11 +219,13 @@ class _AutomaticState extends State<Automatic> {
                 top: 5,
                 left: screenWidth - 55,
                 child: IconButton(
-                  icon: Icon(Icons.home_outlined, size: 50, color: Color(0xff98C5EE)),
+                  icon: Icon(Icons.home_outlined,
+                      size: 50, color: Color(0xff98C5EE)),
                   onPressed: () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => const BasicModes()),
+                      MaterialPageRoute(
+                          builder: (context) => const BasicModes()),
                     );
                   },
                   padding: EdgeInsets.zero,
@@ -219,7 +240,7 @@ class _AutomaticState extends State<Automatic> {
               right: 0,
               child: Center(
                 child: Text(
-                  'Automatic',
+                  AppLocalizations.of(context)!.automatic,
                   style: TextStyle(
                     fontSize: 50,
                     fontWeight: FontWeight.w900,
@@ -239,7 +260,8 @@ class _AutomaticState extends State<Automatic> {
                     ? ElevatedButton(
                         onPressed: isRunning ? null : runPrediction,
                         style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 30, vertical: 10),
                           backgroundColor: Color(0xff062E85),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
@@ -247,7 +269,7 @@ class _AutomaticState extends State<Automatic> {
                           elevation: 5,
                         ),
                         child: Text(
-                          'Pick a JSON file',
+                          AppLocalizations.of(context)!.pick_a_xml_file,
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.w900,
@@ -255,11 +277,11 @@ class _AutomaticState extends State<Automatic> {
                           ),
                         ),
                       )
-                    : Text("🔄 Loading model...",
+                    : Text(AppLocalizations.of(context)!.loading_model,
                         style: TextStyle(fontSize: 24, color: Colors.white)),
               ),
             ),
-if (isRunning || currentPrediction != null)
+            if (isRunning || currentPrediction != null)
               Positioned(
                 top: 200,
                 right: 50,
@@ -276,8 +298,9 @@ if (isRunning || currentPrediction != null)
                         Expanded(
                           child: Center(
                             child: Text(
-                              currentPrediction ?? "Waiting...",
-                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                              currentPrediction ?? AppLocalizations.of(context)!.waiting,
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
@@ -289,10 +312,15 @@ if (isRunning || currentPrediction != null)
                                 isRunning = false;
                               });
                             },
-                            child: Text("Stop", style: TextStyle(color: Colors.white, fontSize: 20,fontWeight: FontWeight.bold)),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.red,
                             ),
+                            child: Text(AppLocalizations.of(context)!.stop,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold)),
+                            
                           ),
                         )
                       ],
@@ -310,10 +338,12 @@ if (isRunning || currentPrediction != null)
                 padding: EdgeInsets.symmetric(horizontal: 32, vertical: 80),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.only(topRight: Radius.circular(2000)),
+                  borderRadius:
+                      BorderRadius.only(topRight: Radius.circular(2000)),
                   boxShadow: [
                     BoxShadow(
-                      color: Color.fromARGB(255, 194, 220, 245).withOpacity(0.72),
+                      color:
+                          Color.fromARGB(255, 194, 220, 245).withOpacity(0.72),
                       offset: Offset(0, -50),
                       blurRadius: 5,
                     ),
@@ -324,7 +354,7 @@ if (isRunning || currentPrediction != null)
                   child: Column(
                     children: [
                       Text(
-                        '''Note:\nTo switch to another mode, turn off automatic mode.''',
+                        AppLocalizations.of(context)!.note_To_switch_to_another_mode_turn_off_automatic_mode,
                         style: TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.w800,
@@ -338,8 +368,6 @@ if (isRunning || currentPrediction != null)
                 ),
               ),
             ),
-
-            
           ],
         ),
       ),

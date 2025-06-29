@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:exoskeleton_suit_app/Advanced.dart';
 import 'package:exoskeleton_suit_app/BasicModes.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
+import 'generated/app_localizations.dart';
 
 
 class Reading extends StatefulWidget {
@@ -112,7 +113,7 @@ class _ReadingState extends State<Reading> {
               right: 0,
               child: Center(
                 child: Text(
-                  'Reading',
+                  AppLocalizations.of(context)!.reading,
                   style: TextStyle(
                     fontSize: 50,
                     fontWeight: FontWeight.w900,
@@ -144,7 +145,7 @@ class _ReadingState extends State<Reading> {
                   elevation: 5,
                 ),
                 child: Text(
-                  'turn off',
+                  AppLocalizations.of(context)!.turn_off,
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w900,
@@ -179,7 +180,7 @@ class _ReadingState extends State<Reading> {
                   child: Column(
                     children: [
                       Text(
-                        '''Note:\nTo switch to another mode, turn off Reading mode.''',
+                        AppLocalizations.of(context)!.note_To_switch_to_another_mode_turn_off_reading_mode,
                         style: TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.w800,

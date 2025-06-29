@@ -3,15 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:exoskeleton_suit_app/Advanced.dart';
 import 'package:exoskeleton_suit_app/Beginner.dart';
 import 'UserProfile.dart';
+import 'bluetooth_managerrr2.dart';
+import 'generated/app_localizations.dart';
+
 
 class BasicModes extends StatefulWidget {
   const BasicModes({Key? key}) : super(key: key);
 
   @override
   State<BasicModes> createState() => _BasicModesState();
+  
 }
 
 class _BasicModesState extends State<BasicModes> {
+  @override
+  void initState() {
+    super.initState();
+     // Auto-connect attempt
+     BluetoothManager().autoConnectIfPossible();
+  }
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -48,8 +58,7 @@ class _BasicModesState extends State<BasicModes> {
               left: 0,
               right: 0,
               child: Center(
-                child: Text(
-                  'Modes',
+                child: Text(AppLocalizations.of(context)!.modes,
                   style: TextStyle(
                     fontSize: 54,
                     fontWeight: FontWeight.w700,
@@ -105,8 +114,8 @@ class _BasicModesState extends State<BasicModes> {
                               const Color.fromARGB(241, 255, 255, 255),
                           elevation: 4,
                         ),
-                        child: const Text(
-                          "Beginner",
+                        child:  Text(
+                          AppLocalizations.of(context)!.beginner,
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 24,
@@ -133,8 +142,8 @@ class _BasicModesState extends State<BasicModes> {
                               const Color.fromARGB(241, 255, 255, 255),
                           elevation: 4,
                         ),
-                        child: const Text(
-                          "Advanced",
+                        child:  Text(
+                          AppLocalizations.of(context)!.advanced,
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 24,
@@ -161,8 +170,8 @@ class _BasicModesState extends State<BasicModes> {
                               const Color.fromARGB(241, 255, 255, 255),
                           elevation: 4,
                         ),
-                        child: const Text(
-                          "User Profile",
+                        child:  Text(
+                          AppLocalizations.of(context)!.user_profile,
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 24,
