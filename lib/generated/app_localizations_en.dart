@@ -181,6 +181,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get position => 'position';
 
   @override
+  String get reading_position => 'Reading position';
+
+  @override
   String get elbow_max => 'Elbow max. position';
 
   @override

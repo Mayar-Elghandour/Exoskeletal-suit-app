@@ -24,6 +24,32 @@ class MainApp extends StatefulWidget {
 
 class _MainAppState extends State<MainApp> {
   Locale? _locale;
+  
+final ThemeData myLightTheme = ThemeData(
+  brightness: Brightness.light,
+  scaffoldBackgroundColor: Colors.white,
+  primaryColor: Colors.blue,
+  appBarTheme: AppBarTheme(
+    backgroundColor: Colors.blue,
+    foregroundColor: Colors.white,
+  ),
+  textTheme: const TextTheme(
+    bodyLarge: TextStyle(color: Colors.black),
+  ),
+);
+
+final ThemeData myDarkTheme = ThemeData(
+  brightness: Brightness.dark,
+  scaffoldBackgroundColor: Color(0xFF121212),
+  primaryColor: Colors.deepPurple,
+  appBarTheme: AppBarTheme(
+    backgroundColor: Colors.black,
+    foregroundColor: Colors.white,
+  ),
+  textTheme: const TextTheme(
+    bodyLarge: TextStyle(color: Colors.white),
+  ),
+);
 
   void setLocale(Locale locale) {
     setState(() {
@@ -41,6 +67,9 @@ class _MainAppState extends State<MainApp> {
     return MaterialApp(
       title: 'Exoskeleton Suit App',
       debugShowCheckedModeBanner: false,
+      theme:myLightTheme,
+      darkTheme: myDarkTheme,
+      themeMode: ThemeMode.system,
       locale: _locale,
       supportedLocales: const [Locale('en'), Locale('ar')],
       localizationsDelegates: const [
@@ -49,9 +78,6 @@ class _MainAppState extends State<MainApp> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate
       ],
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
       home: const AppLifecycleHandler(child: LoadingScreen()),
     );
   }
@@ -98,15 +124,3 @@ class _AppLifecycleHandlerState extends State<AppLifecycleHandler>
     return widget.child;
   }
 }
-/*
-// ✅ Example: Function to call Python from Flutter via Android MethodChannel
-Future<void> callPythonProcessing(String matFilePath) async {
-  try {
-    //final result = await platform.invokeMethod('processMat', {'path': matFilePath});
-    //print('📊 Python processing result: $result');
-    // You can now use the result in your UI
-  } catch (e) {
-    print('❌ Failed to call Python processing: $e');
-  }
-}
-*/

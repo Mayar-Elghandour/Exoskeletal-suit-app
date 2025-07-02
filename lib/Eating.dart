@@ -1,3 +1,5 @@
+import 'package:exoskeleton_suit_app/Manual.dart';
+import 'package:exoskeleton_suit_app/bluetooth_managerrr2.dart';
 import 'package:flutter/material.dart';
 import 'package:exoskeleton_suit_app/Advanced.dart';
 import 'package:exoskeleton_suit_app/BasicModes.dart';
@@ -131,9 +133,10 @@ class _EatingState extends State<Eating> {
               child: Center(
                   child: ElevatedButton(
                 onPressed: () {
+                  BluetoothManager().sendData("0", context);
                   Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => const Advanced()),
+                      MaterialPageRoute(builder: (context) => const Manual()),
                     );
                 },
                 style: ElevatedButton.styleFrom(

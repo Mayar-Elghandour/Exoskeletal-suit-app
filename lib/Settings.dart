@@ -19,6 +19,7 @@ class _SettingsState extends State<Settings> {
     return Scaffold(
       backgroundColor: const Color(0xFF98C5EE),
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 255, 255, 255),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Color(0xff98c5ee)),
           onPressed: () {
@@ -26,7 +27,7 @@ class _SettingsState extends State<Settings> {
           },
         ),
         title:  Text(AppLocalizations.of(context)!.settings,
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700)),
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700,color: Color(0xff98c5ee))),
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 120, left: 20, right: 20),
@@ -41,7 +42,7 @@ class _SettingsState extends State<Settings> {
               },
             ),
             const SizedBox(height: 20),
-            const Divider(color: Colors.white),
+             Divider(color: Theme.of(context).scaffoldBackgroundColor),
             const SizedBox(height: 20),
             _buildRoundedTile(
               icon: Icons.color_lens,
@@ -52,7 +53,7 @@ class _SettingsState extends State<Settings> {
               },
             ),
             const SizedBox(height: 20),
-            const Divider(color: Colors.white),
+             Divider(color: Theme.of(context).scaffoldBackgroundColor),
             const SizedBox(height: 20),
             _buildRoundedTile(
               icon: Icons.language,
@@ -75,7 +76,7 @@ class _SettingsState extends State<Settings> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(20), // 👈 Rounded corners here
         boxShadow: [
           BoxShadow(

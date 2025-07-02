@@ -69,7 +69,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
     
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Stack(
         children: [
           // Main content: title, subtitle, image

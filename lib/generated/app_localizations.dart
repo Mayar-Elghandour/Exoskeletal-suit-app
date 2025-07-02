@@ -443,6 +443,12 @@ abstract class AppLocalizations {
   /// **'position'**
   String get position;
 
+  /// No description provided for @reading_position.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading position'**
+  String get reading_position;
+
   /// No description provided for @elbow_max.
   ///
   /// In en, this message translates to:

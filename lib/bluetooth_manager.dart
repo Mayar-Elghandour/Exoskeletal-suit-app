@@ -5,11 +5,11 @@ import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'Bluetooth_connection.dart';
 import 'generated/app_localizations.dart';
 
-class BluetoothManager {
+class BluetoothManagerrr {
   // Singleton pattern
-  static final BluetoothManager _instance = BluetoothManager._internal();
-  factory BluetoothManager() => _instance;
-  BluetoothManager._internal();
+  static final BluetoothManagerrr _instance = BluetoothManagerrr._internal();
+  factory BluetoothManagerrr() => _instance;
+  BluetoothManagerrr._internal();
 
   BluetoothConnection? _connection;
   BluetoothDevice? _lastConnectedDevice;
@@ -37,14 +37,16 @@ class BluetoothManager {
   _connection = null;
   _lastConnectedDevice = null;
 
-  print("♻️ BluetoothManager fully reset.");
+  print("♻️ BluetoothManagerrr fully reset.");
 }
 
 
 
   Future<bool> connect(BluetoothDevice device) async {
   // ✅ Check and close any existing connection
-  if (_connection != null) {
+  if (_connection != null  && _connection!.isConnected) {
+    print("✅ Already connected to device.");
+    
     try {
       if (_connection!.isConnected) {
         await _connection!.close();

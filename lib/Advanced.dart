@@ -2,11 +2,12 @@
 import 'package:exoskeleton_suit_app/BasicModes.dart';
 import 'package:exoskeleton_suit_app/Bluetooth_connection.dart';
 import 'package:exoskeleton_suit_app/Manual.dart';
-import 'package:exoskeleton_suit_app/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:exoskeleton_suit_app/bluetooth_manager.dart';
+//import 'package:exoskeleton_suit_app/bluetooth_manager.dart';
+import 'package:exoskeleton_suit_app/bluetooth_managerrr2.dart';
 import 'package:exoskeleton_suit_app/xml_processing_automatic.dart';
 import 'generated/app_localizations.dart';
+//import 'package:exoskeleton_suit_app/folder_looping_automatic.dart';
 
 class Advanced extends StatefulWidget {
   const Advanced({Key? key}) : super(key: key);
@@ -21,7 +22,7 @@ class _AdvancedState extends State<Advanced> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Stack(
           children: [
@@ -159,6 +160,10 @@ class _AdvancedState extends State<Advanced> {
                     children: [
                       ElevatedButton(
                         onPressed: () async {
+                          print("🔍 Checking connection on button press: ${BluetoothManager().isConnected}");
+
+    // 🕒 Add delay to ensure connection status is valid
+    await Future.delayed(Duration(milliseconds: 200));
                           if (BluetoothManager().isConnected) {
                             // ✅ Send if connected
                             await BluetoothManager().sendData(

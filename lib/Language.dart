@@ -18,7 +18,7 @@ class _LanguagePageState extends State<LanguagePage> {
 
     return
      Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Stack(
           children: [

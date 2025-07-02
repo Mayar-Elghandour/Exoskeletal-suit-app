@@ -20,7 +20,7 @@ class _BeginnerState extends State<Beginner> {
       title: 'Exoskeleton Suit App',
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: SafeArea(
           child: Stack(
             children: [

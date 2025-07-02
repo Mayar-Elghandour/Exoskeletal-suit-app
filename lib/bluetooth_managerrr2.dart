@@ -42,37 +42,50 @@ class BluetoothManager {
 }
 
 
-  Future<bool> connect(BluetoothDevice device) async {
-  // ✅ Check and close any existing connection
-  if (_connection != null) {
-    try {
-      if (_connection!.isConnected) {
-        await _connection!.close();
-        print("🔒 Closed previous connection.");
-      }
-    } catch (e) {
-      print("⚠️ Error closing previous connection: $e");
-    }
-    _connection = null;
+
+bool _isConnecting = false;
+
+Future<bool> connect(BluetoothDevice device) async {
+  if (_isConnecting) {
+    print("⏳ Connection already in progress...");
+    return false;
   }
 
+  _isConnecting = true;
+
   try {
-    // ✅ Cancel ongoing discovery (required for some Android versions)
+    // ✅ If already connected to the same device, skip reconnection
+    if (_connection != null && _connection!.isConnected) {
+      if (_lastConnectedDevice?.address == device.address) {
+        print("✅ Already connected to ${device.name}");
+        return true;
+      }
+
+      // ✅ Connected to different device, disconnect first
+      try {
+        await _connection!.close();
+        print("🔒 Closed previous connection.");
+        await Future.delayed(Duration(milliseconds: 500)); // Let system release socket
+      } catch (e) {
+        print("⚠️ Error closing previous connection: $e");
+      }
+
+      _connection = null;
+    }
+
+    // ✅ Cancel discovery to prevent connection conflict
     await FlutterBluetoothSerial.instance.cancelDiscovery();
-    await Future.delayed(Duration(seconds: 3)); // ⏳ Wait to let the socket clean up
+    await Future.delayed(Duration(milliseconds: 500)); // Optional extra wait
 
-    print("🔌 Attempting connection to ${device.name}");
+    print("🔌 Attempting connection to ${device.name}...");
 
-    // ✅ Now it's safe to connect
     _connection = await BluetoothConnection.toAddress(device.address);
     _lastConnectedDevice = device;
-print("🔧 Saving device address: ${device.address}");
-await saveDefaultDevice(device.address);
-print("✅ Device address saved.");
 
     print("✅ Connected to ${device.name}");
+    await saveDefaultDevice(device.address);
 
-    // ✅ Set up listener
+    // ✅ Handle incoming data
     _connection!.input?.listen(_onDataReceived).onDone(() async {
       print("⚠️ Connection lost from ${device.name}");
       _connection = null;
@@ -84,8 +97,32 @@ print("✅ Device address saved.");
     print("❌ Connection error: $e");
     _connection = null;
     return false;
+  } finally {
+    _isConnecting = false;
   }
 }
+Future<bool> disconnect() async {
+  print("🔌 Attempting manual disconnect...");
+
+  try {
+    if (_connection != null && _connection!.isConnected) {
+      await _connection!.close();
+      await Future.delayed(Duration(milliseconds: 300));
+      print("✅ Disconnected successfully.");
+    } else {
+      print("ℹ️ No active connection to disconnect.");
+    }
+
+    return true; // ✅ Moved inside the try block
+  } catch (e) {
+    print("⚠️ Error during disconnect: $e");
+    return false;
+  } finally {
+    _connection = null;
+    _lastConnectedDevice = null;
+  }
+}
+
 
 
 Future<void> saveDefaultDevice(String address) async {
@@ -226,9 +263,9 @@ Future<void> autoConnectIfPossible() async {
   /// Listen to received Bluetooth data
 
   /// Disconnect the current Bluetooth connection
-  void disconnect() {
+ /* void disconnect() {
     _connection?.close();
     _connection = null;
     print("🔌 Disconnected manually");
-  }
+  }*/
 }

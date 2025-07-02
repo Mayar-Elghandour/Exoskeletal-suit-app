@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
-//import 'bluetooth_managerrr2.dart';
+import 'bluetooth_managerrr2.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'bluetooth_manager.dart';
+//import 'bluetooth_manager.dart';
 import 'generated/app_localizations.dart';
 
 class BluetoothPage extends StatefulWidget {
@@ -20,8 +20,7 @@ class _BluetoothPageState extends State<BluetoothPage> {
     BluetoothManager().resetConnection();
     _fetchBondedDevices();
   }
-
-  Future<void> _fetchBondedDevices() async {
+  Future<void> activate_permission() async{
     await _requestPermissions();
     //await Future.delayed(const Duration(seconds: 1));
 
@@ -29,7 +28,10 @@ class _BluetoothPageState extends State<BluetoothPage> {
     if (!isEnabled) {
       await FlutterBluetoothSerial.instance.requestEnable();
       //await Future.delayed(const Duration(seconds: 1));
-    }
+    } 
+  }
+  Future<void> _fetchBondedDevices() async {
+   await activate_permission();
 
     List<BluetoothDevice> devices =
         await FlutterBluetoothSerial.instance.getBondedDevices();
@@ -92,7 +94,7 @@ class _BluetoothPageState extends State<BluetoothPage> {
       backgroundColor: const Color(0xFF98C5EE),
       appBar: AppBar(
         title:  Text(AppLocalizations.of(context)!.select_device),
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 2,
         iconTheme: const IconThemeData(color: Color(0xff98c5ee)),
         titleTextStyle: const TextStyle(

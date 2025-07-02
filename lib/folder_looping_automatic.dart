@@ -8,6 +8,7 @@ import 'bluetooth_managerrr2.dart';
 import 'package:exoskeleton_suit_app/MethodChannel.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'generated/app_localizations.dart';
+import 'dart:io';
 
 
 class Automatic extends StatefulWidget {
@@ -59,61 +60,42 @@ void checkAsset() async {
             print("❌ Error loading model: $e");
           }
         }
-  Future<void> runPrediction() async {
-    try {
-      final local = AppLocalizations.of(context)!;
-      
-      FilePickerResult? result = await FilePicker.platform.pickFiles(
-        allowMultiple: true,
-        type: FileType.custom,
-        allowedExtensions: ['xml'],
+ Future<void> runPrediction() async {
+  final local = AppLocalizations.of(context)!;
+
+  try {
+    String? result = await FilePicker.platform.getDirectoryPath();
+    if (result == null) throw Exception(local.no_file_selected);
+
+    print("📊 Selected folder: $result");
+
+    final stopwatch = Stopwatch()..start();
+
+    final dir = Directory(result);
+    final files = dir
+        .listSync()
+        .whereType<File>()
+        .where((file) => file.path.endsWith('.xml'))
+        .toList();
+
+    print("📊 Selected files: ${files.length}");
+
+    if (files.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(local.no_file_selected)),
       );
-      
-     print("📊 Selected file: $result");
-     
-      if (result == null) throw Exception(AppLocalizations.of(context)!.no_file_selected);
-
-      final stopwatch = Stopwatch()..start();
-
-      final file = result.files.single.path!;
-      //print("📊 Selected path: $file");
-      final eeg = await MatChannelService.preprocessXml(file);
-      //print("📊 Preprocessing result: $eeg");
-
-      setState(() {
-        isRunning = true;
-        currentPrediction = null;
-      });      
-
-      if (eeg.length != 19 || eeg[0].length != 200) {
-        print("❌ Invalid shape: ${eeg.length} x ${eeg[0].length}");
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(local.invalid_eeg_shape)),
-        );
-        return;
-      }
-     
-
-      /*
-      if (result == null || result.paths.isEmpty) {
-      throw Exception(local.no_file_selected);
+      return;
     }
-
-    final files = result.paths.whereType<String>().toList();
-    print("🧾 Picked ${files.length} files:");
 
     setState(() {
       isRunning = true;
       currentPrediction = null;
     });
 
-    final stopwatch = Stopwatch()..start();
+    for (var file in files) {
+      print("📁 Processing file: ${file.path}");
 
-    for (final filePath in files) {
-      final i=files.indexOf(filePath);
-      print("📄 Processing file: $filePath");
-
-      final eeg = await MatChannelService.preprocessXml(filePath);
+      final eeg = await MatChannelService.preprocessXml(file.path);
 
       if (eeg.length != 19 || eeg[0].length != 200) {
         print("❌ Invalid shape: ${eeg.length} x ${eeg[0].length}");
@@ -122,14 +104,12 @@ void checkAsset() async {
         );
         continue;
       }
-    
-*/
+
       final input = [
-  eeg.map((channel) => channel.map((v) => [v]).toList()).toList()
-];  // shape: [1, 19, 200, 1]
+        eeg.map((channel) => channel.map((v) => [v]).toList()).toList()
+      ]; // shape: [1, 19, 200, 1]
 
       final output = List.filled(3, 0.0).reshape([1, 3]);
-
       interpreter?.run(input, output);
 
       int predictedIndex = 0;
@@ -145,12 +125,12 @@ void checkAsset() async {
       String predictedLabel = labels[predictedIndex];
 
       setState(() {
-        
-currentPrediction = "${local.classification} $predictedLabel";
+        currentPrediction =
+            "[$predictedIndex] → ${local.classification} $predictedLabel";
       });
 
       try {
-        await BluetoothManager().sendData("$predictedLabel",context); // send the prediction data as character so it can be dealt with easily in the microcontroller
+        await BluetoothManager().sendData("$predictedLabel", context);
         print("✅ Sent: $predictedLabel");
       } catch (e) {
         print("❌ Bluetooth send failed: $e");
@@ -158,33 +138,34 @@ currentPrediction = "${local.classification} $predictedLabel";
           SnackBar(content: Text("${local.bluetooth_send_failed} $e")),
         );
       }
-    print("✅ system sent data in ${stopwatch.elapsedMilliseconds} ms");
-    stopwatch..reset()..start();
-      await Future.delayed(Duration(seconds: 3));
 
-      setState(() {
-        isRunning = false;
-        currentPrediction = null;
-      });
-    
-    } catch (e) {
-      print("❌ Prediction error: $e");
-      final local = AppLocalizations.of(context)!;  
-      showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-           
-          title: Text(local.error),
-          content: Text("${local.something_went_wrong} $e"),
-          actions: [
-            TextButton(
-                onPressed: () => Navigator.pop(context), child: Text(local.ok)),
-          ],
-        ),
-      );
+      print("✅ system sent data in ${stopwatch.elapsedMilliseconds} ms");
+      stopwatch..reset()..start();
+      await Future.delayed(Duration(seconds: 2));
     }
+
+    setState(() {
+      isRunning = false;
+      currentPrediction = null;
+    });
+  } catch (e) {
+    print("❌ Prediction error: $e");
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(local.error),
+        content: Text("${local.something_went_wrong} $e"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(local.ok),
+          ),
+        ],
+      ),
+    );
   }
-  
+}
+
 
   @override
   Widget build(BuildContext context) {

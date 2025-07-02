@@ -1,6 +1,8 @@
 import 'package:exoskeleton_suit_app/BasicModes.dart';
 import 'package:flutter/material.dart';
 import 'generated/app_localizations.dart';
+import 'package:exoskeleton_suit_app/bluetooth_managerrr2.dart';
+import 'dart:convert';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({Key? key}) : super(key: key);
@@ -10,14 +12,24 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
-  double slider1Value = 50;
-  double slider2Value = 50;
-  double slider3Value = 50;
-  double slider4Value = 50;
+  double reading_position = 50;
+  double eating_position = 50;
+  double elbow_min = 50;
+  double elbow_max = 50;
 
-  void sendValueToBluetooth(String label, double value) {
-    print('Sending $label: $value to Bluetooth');
-  }
+ void sendSliders() {
+  final message = jsonEncode({
+    "elbow_min": elbow_min.toInt(),
+    "elbow_max": elbow_max.toInt(),
+    "reading": reading_position.toInt(),
+    "eating": eating_position.toInt(),
+  });
+
+  BluetoothManager().sendData(message, context);
+  print("📤 Sent: $message");
+}
+
+
 
   Widget buildSlider(String label, double value, Function(double) onChanged) {
     return Column(
@@ -52,7 +64,7 @@ class _UserProfileState extends State<UserProfile> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Stack(
           children: [
@@ -63,7 +75,7 @@ class _UserProfileState extends State<UserProfile> {
     width: 150,
     height: 150,
     decoration: BoxDecoration(
-      color: Colors.blue[300],
+      color: const Color(0xFF98C5EE),
       shape: BoxShape.circle,
       boxShadow: [
         BoxShadow(
@@ -110,7 +122,7 @@ Positioned(
     width: 150,
     height: 150,
     decoration: BoxDecoration(
-      color: Colors.blue[300],
+      color: const Color(0xFF98C5EE),
       shape: BoxShape.circle,
       boxShadow: [
         BoxShadow(
@@ -146,13 +158,13 @@ Positioned(
               ),
             ),
             // Title
-            const Positioned(
+             Positioned(
               top: 60,
               left: 0,
               right: 0,
               child: Center(
                 child: Text(
-                  'User Profile',
+                  AppLocalizations.of(context)!.user_profile,
                   style: TextStyle(
                     fontSize: 54,
                     fontWeight: FontWeight.w700,
@@ -173,7 +185,7 @@ Positioned(
                 width: screenWidth,
                 padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 50),
                 decoration: BoxDecoration(
-                  color: Colors.blue[300],
+                  color: const Color(0xFF98C5EE),
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(1000),
                     topRight: Radius.circular(1000),
@@ -191,23 +203,22 @@ Positioned(
                     children: [
 
                       const SizedBox(height: 80),
-                      
-                      buildSlider("Reading position", slider1Value, (value) {
-                        setState(() => slider1Value = value);
-                        sendValueToBluetooth("Slider 1", value);
-                      }),
-                      buildSlider("Eating/ Drinking position", slider2Value, (value) {
-                        setState(() => slider2Value = value);
-                        sendValueToBluetooth("Slider 2", value);
-                      }),
-                      buildSlider("Elbow min. position", slider3Value, (value) {
-                        setState(() => slider3Value = value);
-                        sendValueToBluetooth("Slider 3", value);
-                      }),
-                      buildSlider("Elbow max. position", slider4Value, (value) {
-                        setState(() => slider4Value = value);
-                        sendValueToBluetooth("Slider 4", value);
-                      }),
+                    buildSlider(AppLocalizations.of(context)!.elbow_min, elbow_min, (value) {
+      setState(() => elbow_min = value);
+      sendSliders();
+    }),
+    buildSlider(AppLocalizations.of(context)!.elbow_max, elbow_max, (value) {
+      setState(() => elbow_max = value);
+      sendSliders();
+    }),
+    buildSlider(AppLocalizations.of(context)!.reading_position, reading_position, (value) {
+      setState(() => reading_position = value);
+      sendSliders();
+    }),
+    buildSlider(AppLocalizations.of(context)!.eating_drinking, eating_position, (value) {
+      setState(() => eating_position = value);
+      sendSliders();
+    }),
                     ],
                   ),
                 ),

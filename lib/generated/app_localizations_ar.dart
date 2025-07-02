@@ -31,13 +31,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get user => 'المستخدم';
 
   @override
-  String get user_profile => 'الملف الشخصي';
+  String get user_profile => 'ملف المستخدم';
 
   @override
-  String get bluetooth_connection => 'اتصال بلوتوث';
+  String get bluetooth_connection => 'اتصال البلوتوث';
 
   @override
-  String get themes => 'السمات';
+  String get themes => 'الثيمات';
 
   @override
   String get language => 'اللغة';
@@ -49,25 +49,25 @@ class AppLocalizationsAr extends AppLocalizations {
   String get instructions => 'التعليمات';
 
   @override
-  String get for_grabbing => '                        :للقبض';
+  String get for_grabbing => 'للمسك';
 
   @override
-  String get think_of_your_right_hand => '         فكر في يدك اليمنى';
+  String get think_of_your_right_hand => 'فكر في يدك اليمنى';
 
   @override
-  String get for_elbow_up => '                    :لرفع الكوع';
+  String get for_elbow_up => 'لرفع الكوع';
 
   @override
   String get no_bonded_devices_found => 'لم يتم العثور على أجهزة مقترنة.';
 
   @override
-  String get think_of_your_left_hand => '         فكر في يدك اليسرى';
+  String get think_of_your_left_hand => 'فكر في يدك اليسرى';
 
   @override
-  String get for_elbow_down => '                    :لخفض الكوع';
+  String get for_elbow_down => 'لخفض الكوع';
 
   @override
-  String get think_neutrally => 'فكر بشكل محايد';
+  String get think_neutrally => 'فكر بطريقة محايدة';
 
   @override
   String get automatic => 'تلقائي';
@@ -76,13 +76,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get manual => 'يدوي';
 
   @override
-  String get manual_modes => 'أوضاع يدوية';
+  String get manual_modes => 'الأوضاع اليدوية';
 
   @override
   String get permission_required => 'يتطلب إذن';
 
   @override
-  String get bluetooth_and_location_permissions_are_required => 'يتطلب التطبيق إذن البلوتوث والموقع.';
+  String get bluetooth_and_location_permissions_are_required => 'مطلوب إذن البلوتوث والموقع.';
 
   @override
   String get unknown_device => 'جهاز غير معروف';
@@ -91,13 +91,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get no_file_selected => 'لم يتم اختيار ملف.';
 
   @override
-  String get expected_a_json_array => 'توقّع مصفوفة JSON.';
+  String get expected_a_json_array => 'متوقع مصفوفة JSON.';
 
   @override
-  String get invalid_eeg_shape => 'شكل EEG غير صالح. المتوقع [19, 200]';
+  String get invalid_eeg_shape => 'شكل EEG غير صالح. الشكل المتوقع [19, 200]';
 
   @override
-  String get classification => 'الفئة';
+  String get classification => 'التصنيف';
 
   @override
   String get bluetooth_send_failed => 'فشل إرسال البلوتوث:';
@@ -109,13 +109,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get something_went_wrong => 'حدث خطأ ما:';
 
   @override
-  String get pick_a_xml_file => 'XML اختر ملف';
+  String get pick_a_xml_file => 'اختر ملف XML';
 
   @override
   String get loading_model => 'جاري تحميل النموذج...';
 
   @override
-  String get waiting => 'انتظار...';
+  String get waiting => 'بانتظار...';
 
   @override
   String get stop => 'إيقاف';
@@ -139,22 +139,22 @@ class AppLocalizationsAr extends AppLocalizations {
   String get send_failed => 'فشل الإرسال';
 
   @override
-  String get error_sending_data => '❌ حدث خطأ أثناء إرسال البيانات:';
+  String get error_sending_data => '❌ خطأ في إرسال البيانات:';
 
   @override
   String get select_device => 'اختر الجهاز';
 
   @override
-  String get still_not_connected_to_a_device => '⚠️ لم يتم الاتصال بجهاز بعد';
+  String get still_not_connected_to_a_device => '⚠️لا يزال غير متصل بأي جهاز';
 
   @override
   String get failed_to_connect_to_a_device => 'فشل الاتصال بالجهاز';
 
   @override
-  String get user_didnt_connect_or_connection_failed => '❌ لم يتصل المستخدم أو فشل الاتصال';
+  String get user_didnt_connect_or_connection_failed => '❌المستخدم لم يتصل أو فشل الاتصال';
 
   @override
-  String get eating => 'الأكل';
+  String get eating => 'تناول الطعام';
 
   @override
   String get reading => 'القراءة';
@@ -163,22 +163,25 @@ class AppLocalizationsAr extends AppLocalizations {
   String get rehabilation => 'إعادة التأهيل';
 
   @override
-  String get turn_off => 'إيقاف التشغيل';
+  String get turn_off => 'إيقاف';
 
   @override
-  String get note_To_switch_to_another_mode_turn_off_eating_mode => 'ملاحظة:\nللتبديل إلى وضع آخر، أوقف وضع الأكل.';
+  String get note_To_switch_to_another_mode_turn_off_eating_mode => 'ملاحظة:\nللتبديل إلى وضع آخر، قم بإيقاف وضع تناول الطعام.';
 
   @override
-  String get note_To_switch_to_another_mode_turn_off_reading_mode => 'ملاحظة:\nللتبديل إلى وضع آخر، أوقف وضع القراءة.';
+  String get note_To_switch_to_another_mode_turn_off_reading_mode => 'ملاحظة:\nللتبديل إلى وضع آخر، قم بإيقاف وضع القراءة.';
 
   @override
-  String get note_To_switch_to_another_mode_turn_off_rehabilation_mode => 'ملاحظة:\nللتبديل إلى وضع آخر، أوقف وضع إعادة التأهيل.';
+  String get note_To_switch_to_another_mode_turn_off_rehabilation_mode => 'ملاحظة:\nللتبديل إلى وضع آخر، قم بإيقاف وضع إعادة التأهيل.';
 
   @override
-  String get note_To_switch_to_another_mode_turn_off_automatic_mode => 'ملاحظة:\nللتبديل إلى وضع آخر، أوقف الوضع التلقائي.';
+  String get note_To_switch_to_another_mode_turn_off_automatic_mode => 'ملاحظة:\nللتبديل إلى وضع آخر، قم بإيقاف الوضع التلقائي.';
 
   @override
   String get position => 'الوضعية';
+
+  @override
+  String get reading_position => 'وضعية القراءة';
 
   @override
   String get elbow_max => 'الوضعية القصوى للكوع';
@@ -199,7 +202,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get low_contrast => 'تباين منخفض';
 
   @override
-  String get high_contrast => 'تباين عالٍ';
+  String get high_contrast => 'تباين مرتفع';
 
   @override
   String get loading => 'جارٍ التحميل';
@@ -208,5 +211,5 @@ class AppLocalizationsAr extends AppLocalizations {
   String get choose_language => 'اختر اللغة';
 
   @override
-  String get empower_movement_with_the_power_of_your_mind => 'مكِّن الحركة بقوة عقلك';
+  String get empower_movement_with_the_power_of_your_mind => 'مكّن الحركة بقوة عقلك';
 }

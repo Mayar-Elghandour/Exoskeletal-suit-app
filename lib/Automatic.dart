@@ -4,7 +4,7 @@ import 'package:exoskeleton_suit_app/BasicModes.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
-import 'package:exoskeleton_suit_app/bluetooth_manager.dart';
+import 'bluetooth_managerrr2.dart';
 import 'dart:convert';
 import 'generated/app_localizations.dart';
 

@@ -2,9 +2,11 @@ import 'package:exoskeleton_suit_app/Settings.dart';
 import 'package:flutter/material.dart';
 import 'package:exoskeleton_suit_app/Advanced.dart';
 import 'package:exoskeleton_suit_app/Beginner.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'UserProfile.dart';
 import 'bluetooth_managerrr2.dart';
 import 'generated/app_localizations.dart';
+import 'Bluetooth_connection.dart';
 
 
 class BasicModes extends StatefulWidget {
@@ -19,9 +21,10 @@ class _BasicModesState extends State<BasicModes> {
   @override
   void initState() {
     super.initState();
-     // Auto-connect attempt
+     // Auto-connect attemp
      BluetoothManager().autoConnectIfPossible();
-  }
+   
+      }
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;

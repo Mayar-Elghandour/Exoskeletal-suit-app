@@ -4,6 +4,7 @@ import 'package:exoskeleton_suit_app/Reading.dart';
 import 'package:exoskeleton_suit_app/Rehabilation.dart';
 import 'package:exoskeleton_suit_app/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:exoskeleton_suit_app/bluetooth_managerrr2.dart';
 
 class Manual extends StatefulWidget {
   const Manual({Key? key}) : super(key: key);
@@ -18,7 +19,7 @@ class _ManualState extends State<Manual> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Stack(
           children: [
@@ -163,6 +164,7 @@ class _ManualState extends State<Manual> {
 
                       ElevatedButton(
                     onPressed: () {
+                      BluetoothManager().sendData("e", context);
                       Navigator.push(context, MaterialPageRoute(builder: (context) => const Eating()));
                     },
                     style: ElevatedButton.styleFrom(
@@ -187,6 +189,7 @@ class _ManualState extends State<Manual> {
                   
                   ElevatedButton(
                     onPressed: () {
+                      BluetoothManager().sendData("d", context);
                       Navigator.push(context, MaterialPageRoute(builder: (context) => const Reading()));
                     },
                     style: ElevatedButton.styleFrom(
@@ -211,7 +214,8 @@ class _ManualState extends State<Manual> {
                   
                 ElevatedButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const Rehabilation()));
+                      BluetoothManager().sendData("r", context);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) =>  Rehabilation()));
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
