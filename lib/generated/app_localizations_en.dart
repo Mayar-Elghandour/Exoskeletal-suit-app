@@ -1,3 +1,5 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -82,7 +84,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get permission_required => 'Permission Required';
 
   @override
-  String get bluetooth_and_location_permissions_are_required => 'Bluetooth and location permissions are required.';
+  String get bluetooth_and_location_permissions_are_required =>
+      'Bluetooth and location permissions are required.';
 
   @override
   String get unknown_device => 'Unknown Device';
@@ -133,7 +136,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bluetooth_not_connected => 'Bluetooth Not Connected';
 
   @override
-  String get please_connect_to_a_Bluetooth_device_before_sending_data => 'Please connect to a Bluetooth device before sending data.';
+  String get please_connect_to_a_Bluetooth_device_before_sending_data =>
+      'Please connect to a Bluetooth device before sending data.';
 
   @override
   String get send_failed => 'Send Failed';
@@ -145,13 +149,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get select_device => 'Select Device';
 
   @override
-  String get still_not_connected_to_a_device => '⚠️Still not connected to a device';
+  String get still_not_connected_to_a_device =>
+      '⚠️Still not connected to a device';
 
   @override
   String get failed_to_connect_to_a_device => 'Failed to connect to a device';
 
   @override
-  String get user_didnt_connect_or_connection_failed => '❌User didn\'t connect or connection failed';
+  String get user_didnt_connect_or_connection_failed =>
+      '❌User didn\'t connect or connection failed';
 
   @override
   String get eating => 'Eating';
@@ -166,16 +172,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get turn_off => 'Turn off';
 
   @override
-  String get note_To_switch_to_another_mode_turn_off_eating_mode => 'Note:\nTo switch to another mode, turn off Eating mode.';
+  String get note_To_switch_to_another_mode_turn_off_eating_mode =>
+      'Note:\nTo switch to another mode, turn off Eating mode.';
 
   @override
-  String get note_To_switch_to_another_mode_turn_off_reading_mode => 'Note:\nTo switch to another mode, turn off Reading mode.';
+  String get note_To_switch_to_another_mode_turn_off_reading_mode =>
+      'Note:\nTo switch to another mode, turn off Reading mode.';
 
   @override
-  String get note_To_switch_to_another_mode_turn_off_rehabilation_mode => 'Note:\nTo switch to another mode, turn off Rehabilation mode.';
+  String get note_To_switch_to_another_mode_turn_off_rehabilation_mode =>
+      'Note:\nTo switch to another mode, turn off Rehabilation mode.';
 
   @override
-  String get note_To_switch_to_another_mode_turn_off_automatic_mode => 'Note:\nTo switch to another mode, turn off Automatic mode.';
+  String get note_To_switch_to_another_mode_turn_off_automatic_mode =>
+      'Note:\nTo switch to another mode, turn off Automatic mode.';
 
   @override
   String get position => 'position';
@@ -211,5 +221,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get choose_language => 'Choose Language';
 
   @override
-  String get empower_movement_with_the_power_of_your_mind => 'Empower movement with the power of your mind';
+  String get empower_movement_with_the_power_of_your_mind =>
+      'Empower movement with the power of your mind';
 }

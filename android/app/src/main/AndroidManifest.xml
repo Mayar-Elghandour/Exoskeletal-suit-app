@@ -3,6 +3,7 @@
         android:label="exoskeleton_suit_app"
         android:name="com.chaquo.python.android.PyApplication"
         android:icon="@mipmap/ic_launcher">
+        
         <activity
             android:name=".MainActivity"
             android:exported="true"

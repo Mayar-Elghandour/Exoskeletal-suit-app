@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; 
 import 'package:exoskeleton_suit_app/LoadingScreen.dart';
 import 'package:exoskeleton_suit_app/bluetooth_managerrr2.dart';
-//import 'package:exoskeleton_suit_app/bluetooth_manager.dart';
+import 'package:exoskeleton_suit_app/eye_did.dart'; // ✅ Added this
 import 'generated/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:exoskeleton_suit_app/locale_controller.dart';
+import 'gaze_cursor_overlay.dart'; // ✅ Added this
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,50 +25,61 @@ class MainApp extends StatefulWidget {
 
 class _MainAppState extends State<MainApp> {
   Locale? _locale;
-  
-final ThemeData myLightTheme = ThemeData(
-  brightness: Brightness.light,
-  scaffoldBackgroundColor: Colors.white,
-  primaryColor: Colors.blue,
-  appBarTheme: AppBarTheme(
-    backgroundColor: Colors.blue,
-    foregroundColor: Colors.white,
-  ),
-  textTheme: const TextTheme(
-    bodyLarge: TextStyle(color: Colors.black),
-  ),
-);
 
-final ThemeData myDarkTheme = ThemeData(
-  brightness: Brightness.dark,
-  scaffoldBackgroundColor: Color(0xFF121212),
-  primaryColor: Colors.deepPurple,
-  appBarTheme: AppBarTheme(
-    backgroundColor: Colors.black,
-    foregroundColor: Colors.white,
-  ),
-  textTheme: const TextTheme(
-    bodyLarge: TextStyle(color: Colors.white),
-  ),
-);
+  final ThemeData myLightTheme = ThemeData(
+    brightness: Brightness.light,
+    scaffoldBackgroundColor: Colors.white,
+    primaryColor: Colors.blue,
+    appBarTheme: AppBarTheme(
+      backgroundColor: Colors.blue,
+      foregroundColor: Colors.white,
+    ),
+    textTheme: const TextTheme(
+      bodyLarge: TextStyle(color: Colors.black),
+    ),
+  );
+
+  final ThemeData myDarkTheme = ThemeData(
+    brightness: Brightness.dark,
+    scaffoldBackgroundColor: Color(0xFF121212),
+    primaryColor: Colors.deepPurple,
+    appBarTheme: AppBarTheme(
+      backgroundColor: Colors.black,
+      foregroundColor: Colors.white,
+    ),
+    textTheme: const TextTheme(
+      bodyLarge: TextStyle(color: Colors.white),
+    ),
+  );
 
   void setLocale(Locale locale) {
     setState(() {
       _locale = locale;
     });
   }
-  void initState(){
+
+  @override
+  void initState() {
     super.initState();
+
     BluetoothManager().autoConnectIfPossible();
+    EyeTrackingService().initialize();
+    EyeTrackingService().startCalibration();
+
     LocaleController().setLocaleCallback = setLocale;
+
+    // ✅ Initialize EyeTrackingService after the first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await EyeTrackingService().initialize();
+    });
   }
+
   @override
   Widget build(BuildContext context) {
-    
     return MaterialApp(
       title: 'Exoskeleton Suit App',
       debugShowCheckedModeBanner: false,
-      theme:myLightTheme,
+      theme: myLightTheme,
       darkTheme: myDarkTheme,
       themeMode: ThemeMode.system,
       locale: _locale,
@@ -121,6 +133,12 @@ class _AppLifecycleHandlerState extends State<AppLifecycleHandler>
 
   @override
   Widget build(BuildContext context) {
-    return widget.child;
+    return Stack(
+  children: [
+    widget.child,
+    const GazeCursorOverlay(), // 👁️ Add your gaze overlay on top
+  ],
+);
+
   }
 }
