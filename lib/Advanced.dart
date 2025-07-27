@@ -1,9 +1,9 @@
 import 'package:exoskeleton_suit_app/BasicModes.dart';
 import 'package:exoskeleton_suit_app/Bluetooth_connection.dart';
 import 'package:exoskeleton_suit_app/Manual.dart';
+import 'package:exoskeleton_suit_app/Automatic.dart'; // ✅ Added
 import 'package:flutter/material.dart';
 import 'package:exoskeleton_suit_app/bluetooth_managerrr2.dart';
-import 'package:exoskeleton_suit_app/xml_processing_automatic.dart';
 import 'package:exoskeleton_suit_app/eye_did.dart';
 import 'package:exoskeleton_suit_app/gaze_cursor_overlay.dart';
 import 'generated/app_localizations.dart';
@@ -53,6 +53,70 @@ class _AdvancedState extends State<Advanced> {
     }
   }
 
+  Future<void> _handleAutomaticMode() async {
+    print("🔁 Automatic mode triggered");
+
+    await Future.delayed(const Duration(milliseconds: 200));
+
+    if (BluetoothManager().isConnected) {
+      try {
+        await BluetoothManager().sendData("hi you are on the automatic mode", context);
+      } catch (e) {
+        print("❌ Bluetooth send failed: $e");
+      }
+
+      Navigator.push(context, MaterialPageRoute(builder: (_) => const Automatic()));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.automatic_mode_activated)),
+      );
+      return;
+    }
+
+    final shouldConnect = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(AppLocalizations.of(context)!.bluetooth_not_connected),
+        content: Text(AppLocalizations.of(context)!
+            .please_connect_to_a_Bluetooth_device_before_sending_data),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(AppLocalizations.of(context)!.go_to_bluetooth_page),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(AppLocalizations.of(context)!.cancel),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldConnect == true) {
+      final connected = await Navigator.push<bool>(
+        context,
+        MaterialPageRoute(builder: (_) => BluetoothPage()),
+      );
+
+      if (connected == true && BluetoothManager().isConnected) {
+        try {
+          await BluetoothManager().sendData("hi you are on the automatic mode", context);
+        } catch (e) {
+          print("❌ Bluetooth send failed after connect: $e");
+        }
+
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const Automatic()));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context)!.automatic_mode_activated)),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context)!
+              .still_not_connected_to_a_device)),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -64,7 +128,7 @@ class _AdvancedState extends State<Advanced> {
           body: SafeArea(
             child: Stack(
               children: [
-                // Left Circle
+                // Decorations
                 Positioned(
                   top: -50,
                   left: -50,
@@ -84,8 +148,27 @@ class _AdvancedState extends State<Advanced> {
                     ),
                   ),
                 ),
+                Positioned(
+                  top: -50,
+                  left: screenWidth - 75,
+                  child: Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      color: const Color(0xff98C5EE),
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF98C5EE).withOpacity(0.72),
+                          offset: const Offset(0, 4),
+                          blurRadius: 8,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
 
-                // Back Button (MetaData + Tap)
+                // Back Icon
                 Positioned(
                   top: 10,
                   left: 5,
@@ -111,28 +194,7 @@ class _AdvancedState extends State<Advanced> {
                   ),
                 ),
 
-                // Right Circle
-                Positioned(
-                  top: -50,
-                  left: screenWidth - 75,
-                  child: Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      color: const Color(0xff98C5EE),
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF98C5EE).withOpacity(0.72),
-                          offset: const Offset(0, 4),
-                          blurRadius: 8,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Home Button (MetaData + Tap)
+                // Home Icon
                 Positioned(
                   top: 5,
                   left: screenWidth - 55,
@@ -176,7 +238,7 @@ class _AdvancedState extends State<Advanced> {
                   ),
                 ),
 
-                // Main Buttons
+                // Buttons
                 Positioned(
                   top: 280,
                   left: 0,
@@ -201,72 +263,12 @@ class _AdvancedState extends State<Advanced> {
                     ),
                     child: Column(
                       children: [
-                        // 👁️ Gaze-activated AUTOMATIC button
+                        // 👁️ AUTOMATIC Button
                         MetaData(
-                          metaData: () async {
-                            await Future.delayed(const Duration(milliseconds: 200));
-                            if (BluetoothManager().isConnected) {
-                              await BluetoothManager().sendData("hi you are on the automatic mode", context);
-                              Navigator.push(context, MaterialPageRoute(builder: (_) => const Automatic()));
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(AppLocalizations.of(context)!.automatic_mode_activated)),
-                              );
-                              return;
-                            }
-
-                            final shouldConnect = await showDialog<bool>(
-                              context: context,
-                              builder: (_) => AlertDialog(
-                                title: Text(AppLocalizations.of(context)!.bluetooth_not_connected),
-                                content: Text(AppLocalizations.of(context)!
-                                    .please_connect_to_a_Bluetooth_device_before_sending_data),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.of(context).pop(true),
-                                    child: Text(AppLocalizations.of(context)!.go_to_bluetooth_page),
-                                  ),
-                                  TextButton(
-                                    onPressed: () => Navigator.of(context).pop(false),
-                                    child: Text(AppLocalizations.of(context)!.cancel),
-                                  ),
-                                ],
-                              ),
-                            );
-
-                            if (shouldConnect == true) {
-                              final connected = await Navigator.push<bool>(
-                                context,
-                                MaterialPageRoute(builder: (_) => BluetoothPage()),
-                              );
-
-                              if (connected == true && BluetoothManager().isConnected) {
-                                await BluetoothManager().sendData("hi you are on the automatic mode", context);
-                                Navigator.push(context, MaterialPageRoute(builder: (_) => const Automatic()));
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(AppLocalizations.of(context)!.automatic_mode_activated)),
-                                );
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(AppLocalizations.of(context)!
-                                      .still_not_connected_to_a_device)),
-                                );
-                              }
-                            }
-                          },
+                          metaData: _handleAutomaticMode,
                           behavior: HitTestBehavior.opaque,
                           child: ElevatedButton(
-                            onPressed: () async {
-                              await Future.delayed(const Duration(milliseconds: 200));
-                              if (BluetoothManager().isConnected) {
-                                await BluetoothManager().sendData("hi you are on the automatic mode", context);
-                                Navigator.push(context, MaterialPageRoute(builder: (_) => const Automatic()));
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(AppLocalizations.of(context)!.automatic_mode_activated)),
-                                );
-                                return;
-                              }
-                              // same connection check and fallback dialog code here if needed
-                            },
+                            onPressed: _handleAutomaticMode,
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                               shape: RoundedRectangleBorder(
@@ -286,10 +288,9 @@ class _AdvancedState extends State<Advanced> {
                             ),
                           ),
                         ),
-
                         const SizedBox(height: 50),
 
-                        // 👁️ Gaze-activated MANUAL button
+                        // 👁️ MANUAL Button
                         MetaData(
                           metaData: () {
                             Navigator.push(
@@ -332,7 +333,7 @@ class _AdvancedState extends State<Advanced> {
             ),
           ),
         ),
-        const GazeCursorOverlay(), // 👁️ Gaze feedback
+        const GazeCursorOverlay(), // 👁️ Gaze overlay always on top
       ],
     );
   }

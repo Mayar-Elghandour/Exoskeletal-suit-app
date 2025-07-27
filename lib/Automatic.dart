@@ -9,7 +9,7 @@ import 'dart:convert';
 import 'generated/app_localizations.dart';
 import 'eye_did.dart';
 import 'gaze_cursor_overlay.dart';
-
+import 'package:flutter/rendering.dart';
 class Automatic extends StatefulWidget {
   const Automatic({Key? key}) : super(key: key);
 
