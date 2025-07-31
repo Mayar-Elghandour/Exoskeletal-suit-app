@@ -1,4 +1,5 @@
 import 'package:exoskeleton_suit_app/BasicModes.dart';
+import 'package:exoskeleton_suit_app/Gaze_button.dart';
 import 'package:exoskeleton_suit_app/Settings.dart';
 import 'package:flutter/material.dart';
 import 'locale_controller.dart';
@@ -16,8 +17,7 @@ class _LanguagePageState extends State<LanguagePage> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
 
-    return
-     Scaffold(
+    return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Stack(
@@ -58,7 +58,7 @@ class _LanguagePageState extends State<LanguagePage> {
                   // Navigate to the first page (assuming HomePage is the first page)
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => const Settings()),
+                    MaterialPageRoute(builder: (context) =>  Settings()),
                   );
                 },
                 padding: EdgeInsets.zero,
@@ -91,20 +91,32 @@ class _LanguagePageState extends State<LanguagePage> {
             Positioned(
               top: 5,
               left: screenWidth - 55,
-              child: IconButton(
-                icon: const Icon(
-                  Icons.home_outlined,
-                  size: 50,
-                  color: Color.fromARGB(255, 255, 255, 255),
-                ),
+              child: GazeButton(
+                screenName: LanguagePage().toString(),
                 onPressed: () {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => const BasicModes()),
+                    MaterialPageRoute(builder: (context) =>  Settings()),
                   );
+                   print("Navigating to Settings");
                 },
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
+                // Disable on small screens
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.home_outlined,
+                    size: 50,
+                    color: Color.fromARGB(255, 255, 255, 255),
+                  ),
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const BasicModes()),
+                    );
+                  },
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                ),
               ),
             ),
 
@@ -155,11 +167,10 @@ class _LanguagePageState extends State<LanguagePage> {
                   child: Column(
                     children: [
                       ElevatedButton(
-                        onPressed: ()  {
-                         LocaleController().setLocale(const Locale('en'));
-                Navigator.pop(context);
-              },
-                       
+                        onPressed: () {
+                          LocaleController().setLocale(const Locale('en'));
+                          Navigator.pop(context);
+                        },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 40, vertical: 20),
@@ -170,7 +181,8 @@ class _LanguagePageState extends State<LanguagePage> {
                               const Color.fromARGB(241, 255, 255, 255),
                           elevation: 4,
                         ),
-                        child:  Text("English",
+                        child: Text(
+                          "English",
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 30,
@@ -184,9 +196,8 @@ class _LanguagePageState extends State<LanguagePage> {
 
                       ElevatedButton(
                         onPressed: () {
-                  LocaleController().setLocale(const Locale('ar'));
-                Navigator.pop(context);
-             
+                          LocaleController().setLocale(const Locale('ar'));
+                          Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
@@ -198,8 +209,8 @@ class _LanguagePageState extends State<LanguagePage> {
                               const Color.fromARGB(241, 255, 255, 255),
                           elevation: 4,
                         ),
-                        child: 
-                          const Text("العربية",
+                        child: const Text(
+                          "العربية",
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 36,
@@ -219,6 +230,4 @@ class _LanguagePageState extends State<LanguagePage> {
       ),
     );
   }
-
-
 }

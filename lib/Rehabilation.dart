@@ -6,9 +6,10 @@ import 'package:exoskeleton_suit_app/BasicModes.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'generated/app_localizations.dart';
 import 'package:gif/gif.dart';
-import 'package:flutter/rendering.dart';
 import 'eye_did.dart';
 import 'gaze_cursor_overlay.dart';
+import 'package:flutter/rendering.dart';
+
 
 class Rehabilation extends StatefulWidget {
   Rehabilation({Key? key}) : super(key: key);
@@ -113,7 +114,7 @@ class _RehabilationState extends State<Rehabilation>
                   ),
                 ),
 
-                // ⬅️ Back Button
+                // ⬅️ Back Button (Gaze + Tap)
                 Positioned(
                   top: 10,
                   left: 5,
@@ -126,8 +127,7 @@ class _RehabilationState extends State<Rehabilation>
                     },
                     behavior: HitTestBehavior.opaque,
                     child: IconButton(
-                      icon: Icon(Icons.arrow_back,
-                          size: 50, color: Color(0xff98C5EE)),
+                      icon: Icon(Icons.arrow_back, size: 50, color: Color(0xff98C5EE)),
                       onPressed: () {
                         Navigator.pushReplacement(
                           context,
@@ -161,7 +161,7 @@ class _RehabilationState extends State<Rehabilation>
                   ),
                 ),
 
-                // 🏠 Home Button
+                // 🏠 Home Button (Gaze + Tap)
                 Positioned(
                   top: 5,
                   left: screenWidth - 55,
@@ -206,7 +206,7 @@ class _RehabilationState extends State<Rehabilation>
                   ),
                 ),
 
-                // ⬇️ Turn Off Button
+                // 🔘 Turn Off Button (Gaze + Tap)
                 Positioned(
                   top: 250,
                   left: 0,
@@ -218,8 +218,7 @@ class _RehabilationState extends State<Rehabilation>
                       child: ElevatedButton(
                         onPressed: _handleTurnOff,
                         style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 30, vertical: 10),
+                          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                           backgroundColor: Color(0xff062E85),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
@@ -281,7 +280,7 @@ class _RehabilationState extends State<Rehabilation>
                   ),
                 ),
 
-                // 🖼️ GIF Animation (center)
+                // 🖼️ GIF Animation
                 Center(
                   child: Gif(
                     image: AssetImage("assets\\gifs\\grab_1.gif"),
@@ -293,6 +292,36 @@ class _RehabilationState extends State<Rehabilation>
                     },
                   ),
                 ),
+                Positioned(
+                top: 250,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: MetaData(
+                    metaData: _handleTurnOff,
+                    behavior: HitTestBehavior.opaque,
+                    child: ElevatedButton(
+                      onPressed: _handleTurnOff,
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                        backgroundColor: Color(0xff062E85),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        elevation: 5,
+                      ),
+                      child: Text(
+                        AppLocalizations.of(context)!.turn_off,
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              )
               ],
             ),
           ),

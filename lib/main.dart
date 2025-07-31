@@ -63,16 +63,14 @@ class _MainAppState extends State<MainApp> {
     super.initState();
 
     BluetoothManager().autoConnectIfPossible();
-    EyeTrackingService().initialize();
-    EyeTrackingService().startCalibration();
-
-    LocaleController().setLocaleCallback = setLocale;
-
-    // ✅ Initialize EyeTrackingService after the first frame
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await EyeTrackingService().initialize();
+      EyeTrackingService().startCalibration();
     });
-  }
+
+  LocaleController().setLocaleCallback = setLocale;
+}
+
 
   @override
   Widget build(BuildContext context) {

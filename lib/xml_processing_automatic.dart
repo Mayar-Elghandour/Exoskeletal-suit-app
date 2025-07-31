@@ -8,7 +8,9 @@ import 'bluetooth_managerrr2.dart';
 import 'package:exoskeleton_suit_app/MethodChannel.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'generated/app_localizations.dart';
-
+import 'eye_did.dart';
+import 'gaze_cursor_overlay.dart';
+import 'package:flutter/rendering.dart';
 
 class Automatic extends StatefulWidget {
   const Automatic({Key? key}) : super(key: key);
@@ -22,15 +24,42 @@ class _AutomaticState extends State<Automatic> {
   bool isModelLoaded = false;
   bool isRunning = false;
   String? currentPrediction;
-  
+  Offset? _gazePosition;  
   
   
   
   @override
   void initState() {
     super.initState();
-    
     loadModel();
+    EyeTrackingService().gazeNotifier.addListener(() {
+      if (mounted) {
+        setState(() {
+          _gazePosition = EyeTrackingService().gazeNotifier.value;
+        });
+      }
+    });
+
+    EyeTrackingService().dwellStream.listen((gazePosition) {
+      if (mounted) {
+        _handleDwellTrigger(gazePosition);
+      }
+    });
+  }
+
+  void _handleDwellTrigger(Offset gazePosition) {
+    final RenderBox box = context.findRenderObject() as RenderBox;
+    final Offset local = box.globalToLocal(gazePosition);
+    final hitTestResult = BoxHitTestResult();
+    WidgetsBinding.instance.hitTest(hitTestResult, local);
+
+    for (final result in hitTestResult.path) {
+      final target = result.target;
+      if (target is RenderMetaData && target.metaData is VoidCallback) {
+        (target.metaData as VoidCallback)();
+        break;
+      }
+    }
   }
 
 
@@ -184,7 +213,22 @@ currentPrediction = "${local.classification} $predictedLabel";
       );
     }
   }
-  
+ Widget _gazeButton({
+  required VoidCallback? onPressed,
+  required ButtonStyle style,
+  required Widget child,
+}) {
+  return MetaData(
+    metaData: onPressed,
+    behavior: HitTestBehavior.opaque,
+    child: ElevatedButton(
+      onPressed: onPressed,
+      style: style,
+      child: child,
+    ),
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -216,22 +260,32 @@ currentPrediction = "${local.classification} $predictedLabel";
                   ),
                 ),
               ),
+
               Positioned(
-                top: 10,
-                left: 5,
-                child: IconButton(
-                  icon: Icon(Icons.arrow_back,
-                      size: 50, color: Color(0xff98C5EE)),
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Advanced()),
-                    );
-                  },
-                  padding: EdgeInsets.zero,
-                  constraints: BoxConstraints(),
+                  top: 10,
+                  left: 5,
+                  child: MetaData(
+                    metaData: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const Advanced()),
+                      );
+                    },
+                    behavior: HitTestBehavior.opaque,
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back, size: 50, color: Color(0xff98C5EE)),
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => const Advanced()),
+                        );
+                      },
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                  ),
                 ),
-              ),
+
               Positioned(
                 top: -50,
                 left: screenWidth - 75,
@@ -251,23 +305,35 @@ currentPrediction = "${local.classification} $predictedLabel";
                   ),
                 ),
               ),
-              Positioned(
-                top: 5,
-                left: screenWidth - 55,
-                child: IconButton(
-                  icon: Icon(Icons.home_outlined,
-                      size: 50, color: Color(0xff98C5EE)),
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const BasicModes()),
-                    );
-                  },
-                  padding: EdgeInsets.zero,
-                  constraints: BoxConstraints(),
+
+
+              // Home Icon
+                Positioned(
+                  top: 5,
+                  left: screenWidth - 55,
+                  child: MetaData(
+                    metaData: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const BasicModes()),
+                      );
+                    },
+                    behavior: HitTestBehavior.opaque,
+                    child: IconButton(
+                      icon: const Icon(Icons.home_outlined, size: 50, color: Color(0xff98C5EE)),
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => const BasicModes()),
+                        );
+                      },
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                  ),
                 ),
-              ),
+
+
             ],
 
             Positioned(
@@ -293,7 +359,7 @@ currentPrediction = "${local.classification} $predictedLabel";
               right: 0,
               child: Center(
                 child: isModelLoaded
-                    ? ElevatedButton(
+                    ? _gazeButton(
                         onPressed: isRunning ? null : runPrediction,
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.symmetric(
@@ -404,9 +470,11 @@ currentPrediction = "${local.classification} $predictedLabel";
                 ),
               ),
             ),
+                const GazeCursorOverlay(),
           ],
         ),
       ),
     );
+  
   }
 }

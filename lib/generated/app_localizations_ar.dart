@@ -1,5 +1,3 @@
-// ignore: unused_import
-import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -84,8 +82,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get permission_required => 'يتطلب إذن';
 
   @override
-  String get bluetooth_and_location_permissions_are_required =>
-      'مطلوب إذن البلوتوث والموقع.';
+  String get bluetooth_and_location_permissions_are_required => 'مطلوب إذن البلوتوث والموقع.';
 
   @override
   String get unknown_device => 'جهاز غير معروف';
@@ -136,8 +133,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get bluetooth_not_connected => 'البلوتوث غير متصل';
 
   @override
-  String get please_connect_to_a_Bluetooth_device_before_sending_data =>
-      'يرجى الاتصال بجهاز بلوتوث قبل إرسال البيانات.';
+  String get please_connect_to_a_Bluetooth_device_before_sending_data => 'يرجى الاتصال بجهاز بلوتوث قبل إرسال البيانات.';
 
   @override
   String get send_failed => 'فشل الإرسال';
@@ -155,8 +151,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get failed_to_connect_to_a_device => 'فشل الاتصال بالجهاز';
 
   @override
-  String get user_didnt_connect_or_connection_failed =>
-      '❌المستخدم لم يتصل أو فشل الاتصال';
+  String get user_didnt_connect_or_connection_failed => '❌المستخدم لم يتصل أو فشل الاتصال';
 
   @override
   String get eating => 'تناول الطعام';
@@ -171,20 +166,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get turn_off => 'إيقاف';
 
   @override
-  String get note_To_switch_to_another_mode_turn_off_eating_mode =>
-      'ملاحظة:\nللتبديل إلى وضع آخر، قم بإيقاف وضع تناول الطعام.';
+  String get note_To_switch_to_another_mode_turn_off_eating_mode => 'ملاحظة:\nللتبديل إلى وضع آخر، قم بإيقاف وضع تناول الطعام.';
 
   @override
-  String get note_To_switch_to_another_mode_turn_off_reading_mode =>
-      'ملاحظة:\nللتبديل إلى وضع آخر، قم بإيقاف وضع القراءة.';
+  String get note_To_switch_to_another_mode_turn_off_reading_mode => 'ملاحظة:\nللتبديل إلى وضع آخر، قم بإيقاف وضع القراءة.';
 
   @override
-  String get note_To_switch_to_another_mode_turn_off_rehabilation_mode =>
-      'ملاحظة:\nللتبديل إلى وضع آخر، قم بإيقاف وضع إعادة التأهيل.';
+  String get note_To_switch_to_another_mode_turn_off_rehabilation_mode => 'ملاحظة:\nللتبديل إلى وضع آخر، قم بإيقاف وضع إعادة التأهيل.';
 
   @override
-  String get note_To_switch_to_another_mode_turn_off_automatic_mode =>
-      'ملاحظة:\nللتبديل إلى وضع آخر، قم بإيقاف الوضع التلقائي.';
+  String get note_To_switch_to_another_mode_turn_off_automatic_mode => 'ملاحظة:\nللتبديل إلى وضع آخر، قم بإيقاف الوضع التلقائي.';
 
   @override
   String get position => 'الوضعية';
@@ -220,6 +211,5 @@ class AppLocalizationsAr extends AppLocalizations {
   String get choose_language => 'اختر اللغة';
 
   @override
-  String get empower_movement_with_the_power_of_your_mind =>
-      'مكّن الحركة بقوة عقلك';
+  String get empower_movement_with_the_power_of_your_mind => 'مكّن الحركة بقوة عقلك';
 }

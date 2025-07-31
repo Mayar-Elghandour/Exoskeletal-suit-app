@@ -91,33 +91,35 @@ class _BasicModesState extends State<BasicModes> {
             child: Stack(
               children: [
                 // Top-right Settings icon with gaze
-               Positioned(
+               /*Positioned(
                 top: 20,
                 right: 2, // use `right` instead of `left: screenWidth - 55`
                 child: MetaData(
                   metaData: () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => const Settings()),
+                      MaterialPageRoute(builder: (context) =>  Settings()),
                     );
+                    print('Navigating to Settings');
                   },
                   behavior: HitTestBehavior.opaque,
                   child: GestureDetector(
                     onTap: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => const Settings()),
+                        MaterialPageRoute(builder: (context) =>  Settings()),
                       );
+                      print('Navigating to Settings');
                     },
                     child: const Icon(
                       Icons.settings,
-                      size: 50,
+                      size: 60,
                       color: Color(0xff98C5EE),
                     ),
                   ),
                 ),
               ),
-
+*/
 
                 // Title
                 Positioned(

@@ -17,7 +17,7 @@ class EyeTrackingService {
   EyeTrackingService._internal();
 
   final EyedidFlutter _eyedid = EyedidFlutter();
-  final String _licenseKey = 'dev_qtadvmvbl7q1791kcpyw4ynwexowa8rq93pb2z5t';
+  final String _licenseKey = 'dev_c50w4h79wtxa6408qxa15ql987mf95hlexp024wc';
 
   bool hasCameraPermission = false;
   bool isInitialized = false;
@@ -31,6 +31,13 @@ class EyeTrackingService {
   double nextCalibX = 0.0;
   double nextCalibY = 0.0;
   double calibrationProgress = 0.0;
+  String? _currentScreen;
+void setCurrentScreen(String screenName) {
+  _currentScreen = screenName;
+}
+
+String? get currentScreen => _currentScreen;
+
 
   final ValueNotifier<Offset?> gazeNotifier = ValueNotifier(null);
   final ValueNotifier<bool> calibrationNotifier = ValueNotifier(false);
@@ -47,6 +54,7 @@ class EyeTrackingService {
   Offset? _lastSmoothedOffset;
   Offset? _lastDwellTarget;
   static const Duration dwellDuration = Duration(seconds: 2);//////////////////////////////////////////////////////////////
+  
 
   Future<void> initialize() async {
     await _checkPermissions();
